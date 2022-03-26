@@ -11,3 +11,8 @@ class User(models.Model):
     date_of_birth = models.TextField()
     fan_tier = models.TextField()
     role = models.TextField(default='fan')
+
+class Ticket(models.Model):
+    number = models.IntegerField(primary_key=True)
+    ticket_type = models.TextField(default = 'General Admission') # we will have also: VIP, Reserved
+    date = models.TextField()

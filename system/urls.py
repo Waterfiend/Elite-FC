@@ -7,4 +7,5 @@ urlpatterns = [
     path('login', views.renderLogin),
     path('registerValidate/', views.validateRegistration),
     path('loginValidate/', views.validateLogin),
+    path('Tickets/', views.renderTickets),
 ]

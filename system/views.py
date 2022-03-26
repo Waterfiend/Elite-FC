@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import User
+from .models import User, Ticket
 from django.contrib import messages
 import hashlib
 # Create your views here.
@@ -94,5 +94,31 @@ def validateLogin(request):
             messages.error(request,'Login Failed: Wrong Credentials')
 
         return redirect('/')
+
 def manageUsers(request):
     pass
+
+def renderTickets(request):
+
+    buyLinkOptions ={
+        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
+        'text':'Buy',
+        'class':''
+    }
+
+    infoLinkOptions ={
+        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
+        'text':'Details',
+        'class':''
+    }
+
+    buyLink = Component('link',buyLinkOptions).create()  
+    infoLink = Component('link',infoLinkOptions).create()  
+    tableOptions ={
+        'table_header':['Ticket Number', 'Ticket Type'],
+        'table_rows':[
+            ['1001','General Admission', infoLink, buyLink]
+        ]     
+    }
+    form = Component('table',tableOptions).create()    
+    return render(request,'system/form.html',{'title':'Available Tickets','form':form})
