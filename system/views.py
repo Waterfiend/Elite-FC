@@ -1,3 +1,4 @@
+from turtle import title
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
@@ -89,11 +90,39 @@ def validateLogin(request):
         except:
             existingRecord = None
         if(existingRecord is not None):
+            request.session['login'] = infoDict.copy()
             messages.success(request,'Login Successful! Welcome '+ existingRecord.first_name)
         else:
             messages.error(request,'Login Failed: Wrong Credentials')
 
+        return redirect('/Profile/')
+def renderProfile(request):
+    if 'login' in request.session:
+        existingRecord = User.objects.filter(email=request.session['login']['email']).first()
+        title = 'Welcome '+existingRecord.first_name
+        tableOptions ={
+            'table_rows':[
+            ]     
+        }
+        info = existingRecord.__dict__.copy()
+        info.pop('_state')
+        info.pop('password')
+        for key,item in info.items():
+            tableOptions['table_rows'].append([str(key),str(item)])
+        form = Component('table',tableOptions).create()
+        logoutLinkOptions ={
+            'url':'/logout/',
+            'text':'Logout',
+            'class':'btn btn-dark'
+        }
+        logoutLink = Component('link',logoutLinkOptions).create()
+        return render(request,'system/form.html',{'title':title,'form':form+logoutLink})  
+    else:
         return redirect('/')
+def logout(request):
+    if 'login' in request.session:
+        request.session.pop('login')
+    return redirect('/')
 
 def manageUsers(request):
     users = User.objects.all()

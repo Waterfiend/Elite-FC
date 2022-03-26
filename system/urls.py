@@ -8,6 +8,9 @@ urlpatterns = [
     path('registerValidate/', views.validateRegistration),
     path('loginValidate/', views.validateLogin),
     
+    path('Profile/', views.renderProfile),
+    path('logout/',views.logout),
+    
     
     path('manageUser/', views.manageUsers),
     path('editUserPage/<int:id>', views.manageUserForm),
