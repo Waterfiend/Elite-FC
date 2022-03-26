@@ -19,13 +19,18 @@
         </div>
     </div>
     <nav class="navbar navbar-expand-lg navbar-dark" style='background:black;height:150px;'>
-        
-        <a class="navbar-brand button" style ='position:absolute;right:0;top:0;padding:10px;'  href="/register">
-            Register
-        </a>
-        <a class="navbar-brand button" style ='position:absolute;right:0;top:50px;padding:10px;' href="/login">
-            Login
-        </a>
+        {% if 'login' not in request.session %}
+          <a class="navbar-brand button" style ='position:absolute;right:0;top:0;padding:10px;'  href="/register">
+              Register
+          </a>
+          <a class="navbar-brand button" style ='position:absolute;right:0;top:50px;padding:10px;' href="/login">
+              Login
+          </a>
+        {% else %}
+          <a class="navbar-brand button" style ='position:absolute;right:0;top:50px;padding:10px;' href="/Profile">
+            {{request.session.login.email}}
+          </a>
+        {% endif %}
     </nav>
     <nav class="navbar navbar-expand-lg navbar-dark" style='background:black'>
         <div class="container-fluid" >
@@ -35,7 +40,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-center">
               <li class="nav-item">
-                <a class="nav-link active button" aria-current="page" href="#">Home</a>
+                <a class="nav-link active button" aria-current="page" href="/">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link active button" aria-current="page" href="#">News</a>
