@@ -96,6 +96,47 @@ def validateLogin(request):
             messages.error(request,'Login Failed: Wrong Credentials')
 
         return redirect('/Profile/')
+def profileLinks(request):
+    existingRecord = User.objects.filter(email=request.session['login']['email']).first()
+    
+    if existingRecord.role in ['admin']:
+        manageUsersLink = Component('link',{'url':'/manageUser/', 'text':'Manage Users'}).create()
+    else:
+        manageUsersLink = ''
+    if existingRecord.role in ['admin','staff']:
+        manageScheduleLink = Component('link',{'url':'/manageUser/', 'text':'Manage Schedule'}).create()
+    else:
+        manageScheduleLink = ''
+        
+    if existingRecord.role in ['admin','staff']:
+        manageTicketsLink = Component('link',{'url':'/manageUser/', 'text':'Manage Tickets'}).create()
+    else:
+        manageTicketsLink = ''
+        
+    if existingRecord.role in ['admin','journalist']:
+        manageArticlesLink = Component('link',{'url':'/manageUser/', 'text':'Manage Articles'}).create()
+    else:
+        manageArticlesLink = ''
+    
+    if existingRecord.role in ['admin','couch']:
+        managePlayersLink = Component('link',{'url':'/manageUser/', 'text':'Manage Players'}).create()
+    else:
+        managePlayersLink = ''
+        
+    accountSummaryLink = Component('link',{'url':'/manageUser/', 'text':'Account Summary'}).create()
+    reportsLink = Component('link',{'url':'/manageUser/', 'text':'Reports'}).create()
+    
+    staffControlsDivisionTitle = Component('container',{'type':'h4', 'content':'Staff Control'}).create()
+    staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+accountSummaryLink+reportsLink}).create()
+    
+    servicesDivisionTitle = Component('container',{'type':'h4', 'content':'Services'}).create()
+    servicesDivision = Component('container',{'type':'div','class':'linkContainer', 'content':servicesDivisionTitle+manageUsersLink+manageScheduleLink+manageTicketsLink+manageArticlesLink+managePlayersLink}).create()
+
+    menuTitle = Component('container',{'type':'summary', 'content':'Open Menu'}).create()
+    menuContianer = Component('container',{'type':'div', 'class':'profileLinksMenu','content':staffControlsDivision+servicesDivision}).create()
+    profileLinksMenu = Component('container',{'type':'details', 'content':menuTitle+menuContianer}).create()
+    return profileLinksMenu
+
 def renderProfile(request):
     if 'login' in request.session:
         existingRecord = User.objects.filter(email=request.session['login']['email']).first()
@@ -116,7 +157,7 @@ def renderProfile(request):
             'class':'btn btn-dark'
         }
         logoutLink = Component('link',logoutLinkOptions).create()
-        return render(request,'system/form.html',{'title':title,'form':form+logoutLink})  
+        return render(request,'system/form.html',{'title':title,'form':profileLinks(request)+form+logoutLink})  
     else:
         return redirect('/')
 def logout(request):

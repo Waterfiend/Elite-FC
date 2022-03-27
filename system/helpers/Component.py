@@ -12,6 +12,8 @@ class Component:
             self._initializeLink(options)
         elif (self.componenetType == 'script'):
             self._initializeScript(options)
+        elif (self.componenetType == 'container'):
+            self._initializeContainer(options)
             
     def create(self,request=None):
         if(self.componenetType=='form'):
@@ -22,6 +24,8 @@ class Component:
             return self._createLink()
         if(self.componenetType=='script'):
             return self._createScript()
+        if(self.componenetType=='container'):
+            return self._createContainer()
         
     def _initializeForm(self, options):
         self.length = 0
@@ -53,7 +57,7 @@ class Component:
                 self.inputClasses[key] = inputClass
     
     def _createForm(self,request):
-        element = '<form id="form" method=' + "'"+self.method+ "'" + ' action=' + "'" +self.destination+ "'" + ' class=' + "'"+ self.formClass+ "'"+'> '
+        element = '<form id="form" method=' + "'"+self.method+ "'" + ' action=' + "'" +self.destination+ "'" + ' class=' + "'"+ self.formClass+ "'"+' enctype="multipart/form-data"> '
         element += '<input name="csrfmiddlewaretoken" value='+ csrf.get_token(request) + ' type="hidden" />'
         for i in range(0,self.length):
             if('label' in self.formFields[i] and 'input_props' in self.formFields[i]):
@@ -126,4 +130,16 @@ class Component:
             self.script = options['script']
     def _createScript(self):
         return '<script>'+self.script+'</script>'
-        
+    def _initializeContainer(self,options):
+        self.containerClass = ''
+        if('class' in options):
+            self.containerClass = options['class']
+        self.type = ''
+        if('type' in options):
+            self.type = options['type']
+        self.content = ''
+        if('content' in options):
+            self.content = options['content']
+    def _createContainer(self):
+        element = '<'+self.type+ ' class='+  '"' +self.containerClass + '"'+ '>'+ self.content + '</'+self.type+'>'
+        return element
