@@ -16,4 +16,5 @@ urlpatterns = [
     path('editUserPage/<int:id>', views.manageUserForm),
     path('editUserValidate/<int:id>', views.editUserValidate),
     path('deleteUser/<int:id>', views.deleteUser),
+    path('News/', views.renderNews), 
 ]

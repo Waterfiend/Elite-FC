@@ -12,3 +12,7 @@ class User(models.Model):
     fan_tier = models.TextField()
     role = models.TextField(default='fan')
     
+class News(models.Model):
+    Title = models.TextField(primary_key=True)
+    Date = models.TextField()
+ #not complete

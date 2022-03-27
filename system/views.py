@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import User
+from .models import User, News
 from django.contrib import messages
 import hashlib
 # Create your views here.
@@ -214,4 +214,20 @@ def deleteUser(request,id):
     existingRecord.delete()
     return redirect('/manageUser')
     
+def renderNews(request):
     
+    infoLinkOptions ={
+        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
+        'text':'Read',
+        'class':''
+    }
+ 
+    infoLink = Component('link',infoLinkOptions).create() 
+    tableOption ={
+        'table_header':['Title', 'Date'],
+        'table_rows':[
+            ['Unsung Hero','20/03/2022', infoLink]
+        ]     
+    }
+    form = Component('table',tableOption).create()    
+    return render(request,'system/form.html',{'title':'News','form':form})    
