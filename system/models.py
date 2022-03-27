@@ -13,6 +13,13 @@ class User(models.Model):
     role = models.TextField(default='fan')
 
 class Ticket(models.Model):
+    
     number = models.IntegerField(primary_key=True)
     ticket_type = models.TextField(default = 'General Admission') # we will have also: VIP, Reserved
-    date = models.TextField()
+
+    def __init__(self, num, typ):
+        self.number = num
+        self.ticket_type = typ
+
+    def __str__(self):
+        return self.ticket_type

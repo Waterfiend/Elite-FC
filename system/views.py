@@ -1,3 +1,5 @@
+import string
+from tkinter import Menu
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
@@ -98,7 +100,23 @@ def validateLogin(request):
 def manageUsers(request):
     pass
 
+def createTicket(post):
+    pass
+
+def createTicketType(post): 
+    """TO DO: create functionality to add new ticket type"""
+    pass
+
+def deleteTicketType(post):
+    """TO DO: create functionality to delete ticket type"""
+    pass
+
+def editTicketType(post):
+    """TO DO: create functionality to edit ticket type"""
+    pass
+    
 def renderTickets(request):
+    """TO DO: create functionality to view ticket types before managing them"""
 
     buyLinkOptions ={
         'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
@@ -112,13 +130,21 @@ def renderTickets(request):
         'class':''
     }
 
+    ''' These two should be Ticket attributes not strings'''
+    ticketType = 'General Admission'
+    ticketNum = '1002'
+
     buyLink = Component('link',buyLinkOptions).create()  
     infoLink = Component('link',infoLinkOptions).create()  
+    
     tableOptions ={
         'table_header':['Ticket Number', 'Ticket Type'],
         'table_rows':[
-            ['1001','General Admission', infoLink, buyLink]
+            [ticketNum, ticketType, infoLink, buyLink]
         ]     
     }
-    form = Component('table',tableOptions).create()    
+    if (User.role == 'admin'):
+        render(request,'system/extras.html')
+
+    form = Component('table',tableOptions).create()
     return render(request,'system/form.html',{'title':'Available Tickets','form':form})
