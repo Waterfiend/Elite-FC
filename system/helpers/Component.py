@@ -57,7 +57,7 @@ class Component:
                 self.inputClasses[key] = inputClass
     
     def _createForm(self,request):
-        element = '<form id="form" method=' + "'"+self.method+ "'" + ' action=' + "'" +self.destination+ "'" + ' class=' + "'"+ self.formClass+ "'"+'> '
+        element = '<form id="form" method=' + "'"+self.method+ "'" + ' action=' + "'" +self.destination+ "'" + ' class=' + "'"+ self.formClass+ "'"+' enctype="multipart/form-data"> '
         element += '<input name="csrfmiddlewaretoken" value='+ csrf.get_token(request) + ' type="hidden" />'
         for i in range(0,self.length):
             if('label' in self.formFields[i] and 'input_props' in self.formFields[i]):
