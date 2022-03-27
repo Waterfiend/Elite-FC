@@ -33,6 +33,26 @@
     font-size: 20px;
 }
 
+.linkContainer{
+    width:150px;
+    margin:0 10px;
+}
+.linkContainer a{
+    display: block;
+    height:35px;
+    width:140px;
+    line-height: 35px;
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    text-align: center;
+}
+
+.profileLinksMenu{
+    display: flex;
+    flex-wrap: wrap;
+}
 @media only screen and (max-width: 986px) {
     /* For mobile phones: */
     .navbar-nav.navbar-center {
