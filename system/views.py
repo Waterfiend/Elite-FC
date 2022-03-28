@@ -143,8 +143,13 @@ def renderTickets(request):
             [ticketNum, ticketType, infoLink, buyLink]
         ]     
     }
-    if (User.role == 'admin'):
-        render(request,'system/extras.html')
+
+    buttonOptions ={
+
+        
+    }
 
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html',{'title':'Available Tickets','form':form})
+    button = Component('button', buttonOptions).create()
+
+    return render(request,'system/form.html',{'title':'Available Tickets','form':form, 'button':button})
