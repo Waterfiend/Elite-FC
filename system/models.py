@@ -11,4 +11,9 @@ class User(models.Model):
     date_of_birth = models.TextField()
     fan_tier = models.TextField()
     role = models.TextField(default='fan')
+
+class FieldReservation(models.Model):
+    id = models.IntegerField(primary_key=True)
+    date = models.TextField()
+    slot_time = models.TextField()
     
