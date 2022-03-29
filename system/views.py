@@ -213,5 +213,18 @@ def deleteUser(request,id):
     existingRecord = User.objects.filter(id=id)
     existingRecord.delete()
     return redirect('/manageUser')
-    
+
+
+def fieldReservation(request):
+    title= 'Field Reservation'
+    formOptions = {'form_class':'form','method':'POST','action':'/editUserValidate/'+str(id),
+        'form_fields':[
+           
+          
+            {'label':'Reservation Date','input_props':{'name':'date','type':'date'}},
+            {'label':'Role','field_type':'select','input_props':{'name':'slot_time','type':'text'},'select_options':['9:00 AM-11:00 AM','9:00 AM-11:00 AM','11:00 AM-1:00 PM','1:00 PM-3:00 PM','3:00 PM-5:00 PM']},
+        ]}
+    form = Component('form',formOptions).create(request)
+    return render(request,'system/form.html',{'title':title,'form':form})
+
     
