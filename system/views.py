@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import User, Ticket
+from .models import User, Ticket, Match
 from django.contrib import messages
 import hashlib
 # Create your views here.
@@ -100,56 +100,110 @@ def validateLogin(request):
 def manageUsers(request):
     pass
 
-def createTicket(post):
-    pass
-
-def createTicketType(post): 
-    """TO DO: create functionality to add new ticket type"""
-    pass
-
-def deleteTicketType(post):
-    """TO DO: create functionality to delete ticket type"""
-    pass
-
-def editTicketType(post):
-    """TO DO: create functionality to edit ticket type"""
-    pass
+def createTicket(request):
     
+    title = 'Registration Form'
+    matches = Match.objects.all()
+    match_ids = []
+
+    for match in matches:
+        match_ids.append(str(match.id))
+
+    formOptions = {'form_class':'form','method':'POST','action':'/TicketValidate/',
+        'form_fields':[
+            {'label':'Quantity','input_props':{'name':'quantity','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
+            {'label':'Ticket Type','field_type':'select','input_props':{'name':'ticket_type','type':'text'},'select_options':['General Admission', 'VIP', 'Reserved']},
+            {'label':'Price','input_props':{'name':'price','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
+            {'label':'Matches','field_type':'select','input_props':{'name':'match','type':'text'},'select_options': match_ids},
+
+        ]}
+    form = Component('form',formOptions).create(request)
+
+    formValidationScript = FormValidationErrorsJS(['Quantity_input','Ticket Type_input','Price_input','Matches_input'])
+    formValidationScriptComponenet = Component('script',formValidationScript).create()
+
+
+    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet})
+
+def deleteTicket(request,id):
+    existingRecord = Ticket.objects.filter(id=id)
+    existingRecord.delete()
+    return redirect('/Tickets/')
+
+def editTicket(request,id):
+    
+    existingRecord = Ticket.objects.filter(id=id)
+
+    ###############################################
+    existingRecord.update(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=mcreateatch, price = infoDict["price"])
+    
+    return redirect('/Tickets/')
+
+def validateEdit(request, id):
+
+    existingRecord = Ticket.objects.filter(id=id)
+    if(request.method == 'POST'):
+        infoDict = request.POST.copy() # POST takes all what is in Form from submit
+        match = Match.objects.filter(id=infoDict["match"]).first()
+        try:
+            existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
+        except:
+            existingRecord = None
+        if(existingRecord is None):
+            Ticket.objects.create(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
+            messages.success(request,'Ticket Successfully Added')
+        else:
+            messages.error(request,'Ticket for already existing match')
+
+        return redirect('/Tickets/')
+
+def validateTicket(request):
+    if(request.method == 'POST'):
+        infoDict = request.POST.copy() # POST takes all what is in Form from submit
+        match = Match.objects.filter(id=infoDict["match"]).first()
+        try:
+            existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
+        except:
+            existingRecord = None
+        if(existingRecord is None):
+            Ticket.objects.create(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
+            messages.success(request,'Ticket Successfully Added')
+        else:
+            messages.error(request,'Ticket for already existing match')
+
+        return redirect('/Tickets/')
+
+def createTicketType(request): 
+    pass
+
+def deleteTicketType(request):
+    pass
+
+def editTicketType(request):
+    pass
+
 def renderTickets(request):
-    """TO DO: create functionality to view ticket types before managing them"""
 
-    buyLinkOptions ={
-        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
-        'text':'Buy',
+    addOptions = {
+        'url':'/CreateTicketForm/',
+        'text':'Add Ticket',
         'class':''
     }
+    addLink = Component('link', addOptions).create()
 
-    infoLinkOptions ={
-        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
-        'text':'Details',
-        'class':''
-    }
-
-    ''' These two should be Ticket attributes not strings'''
-    ticketType = 'General Admission'
-    ticketNum = '1002'
-
-    buyLink = Component('link',buyLinkOptions).create()  
-    infoLink = Component('link',infoLinkOptions).create()  
-    
     tableOptions ={
-        'table_header':['Ticket Number', 'Ticket Type'],
-        'table_rows':[
-            [ticketNum, ticketType, infoLink, buyLink]
-        ]     
+        'table_header':['Ticket Number', 'Match Date', "Ticket Type", "Price", "Quantity"],
+        'table_rows':[],     
     }
-
-    buttonOptions ={
-
-        
-    }
+    tickets = Ticket.objects.all()
+    for ticket in tickets:
+        deleteLinkOptions ={
+        'url':'/deleteTicket/'+str(ticket.id),
+        'text':'Delete',
+        'class':''
+        }
+        deleteLink = Component('link', deleteLinkOptions).create()
+        tableOptions['table_rows'].append([str(ticket.id), ticket.match.date, ticket.ticket_type, str(ticket.price), str(ticket.quantity), deleteLink])
 
     form = Component('table',tableOptions).create()
-    button = Component('button', buttonOptions).create()
-
-    return render(request,'system/form.html',{'title':'Available Tickets','form':form, 'button':button})
+    return render(request,'system/form.html', {'title':'Available Tickets','form':form + addLink})
