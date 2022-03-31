@@ -130,33 +130,6 @@ def deleteTicket(request,id):
     existingRecord.delete()
     return redirect('/Tickets/')
 
-def editTicket(request,id):
-    
-    existingRecord = Ticket.objects.filter(id=id)
-
-    ###############################################
-    existingRecord.update(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=mcreateatch, price = infoDict["price"])
-    
-    return redirect('/Tickets/')
-
-def validateEdit(request, id):
-
-    existingRecord = Ticket.objects.filter(id=id)
-    if(request.method == 'POST'):
-        infoDict = request.POST.copy() # POST takes all what is in Form from submit
-        match = Match.objects.filter(id=infoDict["match"]).first()
-        try:
-            existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
-        except:
-            existingRecord = None
-        if(existingRecord is None):
-            Ticket.objects.create(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
-            messages.success(request,'Ticket Successfully Added')
-        else:
-            messages.error(request,'Ticket for already existing match')
-
-        return redirect('/Tickets/')
-
 def validateTicket(request):
     if(request.method == 'POST'):
         infoDict = request.POST.copy() # POST takes all what is in Form from submit
@@ -172,15 +145,6 @@ def validateTicket(request):
             messages.error(request,'Ticket for already existing match')
 
         return redirect('/Tickets/')
-
-def createTicketType(request): 
-    pass
-
-def deleteTicketType(request):
-    pass
-
-def editTicketType(request):
-    pass
 
 def renderTickets(request):
 
@@ -207,3 +171,30 @@ def renderTickets(request):
 
     form = Component('table',tableOptions).create()
     return render(request,'system/form.html', {'title':'Available Tickets','form':form + addLink})
+
+# def editTicket(request,id):
+    
+#     existingRecord = Ticket.objects.filter(id=id)
+
+#     ###############################################
+#     existingRecord.update(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=mcreateatch, price = infoDict["price"])
+    
+#     return redirect('/Tickets/')
+
+# def validateEdit(request, id):
+
+#     existingRecord = Ticket.objects.filter(id=id)
+#     if(request.method == 'POST'):
+#         infoDict = request.POST.copy() # POST takes all what is in Form from submit
+#         match = Match.objects.filter(id=infoDict["match"]).first()
+#         try:
+#             existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
+#         except:
+#             existingRecord = None
+#         if(existingRecord is None):
+#             Ticket.objects.create(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
+#             messages.success(request,'Ticket Successfully Added')
+#         else:
+#             messages.error(request,'Ticket for already existing match')
+
+#         return redirect('/Tickets/')
