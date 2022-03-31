@@ -166,35 +166,67 @@ def renderTickets(request):
         'text':'Delete',
         'class':''
         }
+        editLinkOptions ={
+        'url':'/editTicket/'+str(ticket.id),
+        'text':'Edit',
+        'class':''
+        }
+        editLink = Component('link', editLinkOptions).create()
         deleteLink = Component('link', deleteLinkOptions).create()
-        tableOptions['table_rows'].append([str(ticket.id), ticket.match.date, ticket.ticket_type, str(ticket.price), str(ticket.quantity), deleteLink])
+        tableOptions['table_rows'].append([str(ticket.id), ticket.match.date, ticket.ticket_type, str(ticket.price), str(ticket.quantity), deleteLink, editLink])
 
     form = Component('table',tableOptions).create()
     return render(request,'system/form.html', {'title':'Available Tickets','form':form + addLink})
 
-# def editTicket(request,id):
+def editTicket(request,id):
     
-#     existingRecord = Ticket.objects.filter(id=id)
+    matches = Match.objects.all()
+    match_ids = []
 
-#     ###############################################
-#     existingRecord.update(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=mcreateatch, price = infoDict["price"])
+    for match in matches:
+        match_ids.append(str(match.id))
     
-#     return redirect('/Tickets/')
+    formOptions = {'form_class':'form','method':'POST','action':'/editTicketValidate/',
+        'form_fields':[
+            {'label':'Quantity','input_props':{'name':'quantity','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
+            {'label':'Ticket Type','field_type':'select','input_props':{'name':'ticket_type','type':'text'},'select_options':['General Admission', 'VIP', 'Reserved']},
+            {'label':'Price','input_props':{'name':'price','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
+            {'label':'Matches','field_type':'select','input_props':{'name':'match','type':'text'},'select_options': match_ids},
+        ]}
+    form = Component('form',formOptions).create(request)
 
-# def validateEdit(request, id):
+    tickets = Ticket.objects.all()
+    for ticket in tickets:
+        deleteLinkOptions ={
+        'url':'/deleteTicket/'+str(ticket.id),
+        'text':'Delete',
+        'class':''
+        }
+        editLinkOptions ={
+        'url':'/editTicket/'+str(ticket.id),
+        'text':'Edit',
+        'class':''
+        }
+        editLink = Component('link', editLinkOptions).create()
 
-#     existingRecord = Ticket.objects.filter(id=id)
-#     if(request.method == 'POST'):
-#         infoDict = request.POST.copy() # POST takes all what is in Form from submit
-#         match = Match.objects.filter(id=infoDict["match"]).first()
-#         try:
-#             existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
-#         except:
-#             existingRecord = None
-#         if(existingRecord is None):
-#             Ticket.objects.create(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
-#             messages.success(request,'Ticket Successfully Added')
-#         else:
-#             messages.error(request,'Ticket for already existing match')
+    existingRecord = Ticket.objects.filter(id=id)
+    existingRecord.update()
+    return render(request,'system/form.html', {'title':'Edit Ticket ' + str(ticket.id),'form':form})
 
-#         return redirect('/Tickets/')
+def editTicketValidate(request, id = 0):
+
+    existingRecord = Ticket.objects.filter(id=id)
+    if(request.method == 'POST'):
+        infoDict = request.POST.copy() # POST takes all what is in Form from submit
+        match = Match.objects.filter(id=infoDict["match"]).first()
+        try:
+            existingRecord = Ticket.objects.filter(match=match).first() # match of model = match fetched
+        except:
+            existingRecord = None
+        if(existingRecord is None):
+            Ticket.objects.update(ticket_type=infoDict["ticket_type"], quantity=infoDict["quantity"], match=match, price = infoDict["price"])
+            messages.success(request,'Ticket Successfully Edited')
+        else:
+            messages.error(request,'Invalid Ticket Edit')
+
+        return redirect('/Tickets/')
