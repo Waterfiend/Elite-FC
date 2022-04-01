@@ -319,8 +319,8 @@ def display_schedule(request):
 
 class HomeView(ListView): #list all blog posts
     model = Post
-    template_name = 'news.html'
+    template_name = 'system/news.html'
 
 class ArticleDetailView(DetailView):
     model = Post #our model is the Post model
-    template_name = 'article_details.html'
+    template_name = 'system/article_details.html'
