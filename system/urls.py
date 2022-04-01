@@ -7,7 +7,8 @@ urlpatterns = [
     path('login', views.renderLogin),
     path('registerValidate/', views.validateRegistration),
     path('loginValidate/', views.validateLogin),
-
+    path('News/', views.HomeView.as_view(), name = "news"),
+    path('article/<int:pk>',views.ArticleDetailView.as_view(), name = 'article-detail'), #pk is the privatekey of each entry, each post  has its own unique primary key
     path('Profile/', views.renderProfile),
     path('logout/', views.logout),
 

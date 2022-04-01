@@ -2,10 +2,10 @@ import hashlib
 
 from django.contrib import messages
 from django.shortcuts import render, redirect
-
+from django.views.generic import ListView, DetailView
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import User
+from .models import User, Post
 
 
 def hello(request):
@@ -316,3 +316,11 @@ def display_schedule(request):
     }
     form = Component('table', table_options).create()
     return render(request, 'system/form.html', {'title': 'Matches', 'form': form})
+
+class HomeView(ListView): #list all blog posts
+    model = Post
+    template_name = 'news.html'
+
+class ArticleDetailView(DetailView):
+    model = Post #our model is the Post model
+    template_name = 'article_details.html'
