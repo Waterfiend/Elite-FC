@@ -19,4 +19,6 @@ urlpatterns = [
 
 
     path('fieldReservation/', views.fieldReservation),
+    path('reservationValidate/', views.reservationValidate),
+
 ]

@@ -3,26 +3,14 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import User
+from .models import User, FieldReservation
 from django.contrib import messages
 import hashlib
 # Create your views here.
 
 def hello(request):
-    deleteLinkOptions ={
-        'url':'https://images.theconversation.com/files/443350/original/file-20220131-15-1ndq1m6.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C3354%2C2464&q=45&auto=format&w=926&fit=clip',
-        'text':'delete',
-        'class':''
-    }
-    deleteLink = Component('link',deleteLinkOptions).create()  
-    tableOptions ={
-        'table_header':['Name', 'Email', 'Edit', 'Delete'],
-        'table_rows':[
-            ['Hadi','email','ee',deleteLink]
-        ]     
-    }
-    form = Component('table',tableOptions).create()    
-    return render(request,'system/form.html',{'title':'Table','form':form})
+    
+    return render(request,'system/home.html')
 
 def renderRegistration(request):
 
@@ -217,14 +205,40 @@ def deleteUser(request,id):
 
 def fieldReservation(request):
     title= 'Field Reservation'
-    formOptions = {'form_class':'form','method':'POST','action':'/editUserValidate/'+str(id),
+    formOptions = {'form_class':'form','method':'POST','action':'/reservationValidate/',
         'form_fields':[
            
           
             {'label':'Reservation Date','input_props':{'name':'date','type':'date'}},
-            {'label':'Role','field_type':'select','input_props':{'name':'slot_time','type':'text'},'select_options':['9:00 AM-11:00 AM','9:00 AM-11:00 AM','11:00 AM-1:00 PM','1:00 PM-3:00 PM','3:00 PM-5:00 PM']},
+            {'label':'Time','field_type':'select','input_props':{'name':'slot_time','type':'text'},'select_options':['9:00 AM-11:00 AM','9:00 AM-11:00 AM','11:00 AM-1:00 PM','1:00 PM-3:00 PM','3:00 PM-5:00 PM']},
         ]}
     form = Component('form',formOptions).create(request)
-    return render(request,'system/form.html',{'title':title,'form':form})
+    tableOptions ={
+            'table_header':['Reserved Date', 'Time Slot'],
+            'table_rows':[
+            ]     
+        }
+    reservations= FieldReservation.objects.all()    
+    for reservation in reservations:  
+        tableOptions['table_rows'].append([reservation.date,reservation.slot_time])
+    table = Component('table',tableOptions).create()    
+    return render(request,'system/form.html',{'title':title,'form':form+table})
+
+def reservationValidate(request):
+    if (request.method== 'POST'):
+        requestData= request.POST.copy()
+        try:
+            existingReservation= FieldReservation.objects.filter(date= requestData['date'], slot_time=requestData['slot_time']).first()
+            
+        except:
+            existingReservation= None
+        if (existingReservation is None):
+            FieldReservation.objects.create(date= requestData['date'], slot_time=requestData['slot_time'])
+            messages.success(request,'Reservation Successful, Price: 15$')
+        else:
+            messages.error(request,'Time slot reserved')
+    return redirect('/fieldReservation')
+
+
 
     
