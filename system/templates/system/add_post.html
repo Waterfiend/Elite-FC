@@ -1,0 +1,12 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Add Article
+    {% endblock %}
+
+    {%block content%}
+    <h1>Add Article</h1>
+    <form method= "POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-dark">Post</button>
+    {% endblock %}
