@@ -8,7 +8,9 @@ urlpatterns = [
     path('',include('system.domains.ManageUsers.ManageUsers_urls')),
     path('',include('system.domains.FieldReservation.FieldReservation_urls')),
     path('',include('system.domains.ManagePermissions.ManagePermissions_urls')),
-
+    path('',include('system.domains.News.News_urls')),
+    path('',include('system.domains.Matches.Matches_urls')),
+    
     path('accountSummary/', views.accountSummary),
 
 ]

@@ -83,7 +83,7 @@ def validateLogin(request):
         return redirect('/Profile/')
 def profileLinks(request):
     existingRecord = User.objects.filter(email=request.session['login']['email']).first()
-    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/manageUser','Manage Tickets':'/Tickets','Manage Articles':'/manageUser','Manage Players':'/manageUser'}
+    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Players':'/manageUser'}
     generatedSensitiveLinks=[]
     for key,value in sensitivePaths.items():
         AllowedRoles = Permission.objects.filter(path=value).values_list('role',flat=True)

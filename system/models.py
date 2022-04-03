@@ -1,5 +1,7 @@
 from email.policy import default
 from django.db import models
+from django.db.models import Q
+from django.urls import reverse
 
 # Create your models here.
 class Role(models.Model):
@@ -21,6 +23,8 @@ class User(models.Model):
     date_of_birth = models.TextField()
     fan_tier = models.TextField()
     role = models.TextField(default='fan')
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
 class Salary(models.Model):
      id= models.IntegerField(primary_key=True)
      fan_tier = models.TextField()
@@ -58,6 +62,7 @@ class Match(models.Model):
     team2 = models.TextField(default = "")
     score1 = models.IntegerField(default = 0)
     score2 = models.IntegerField(default = 0)
+    location = models.TextField(default="")
 
 class Ticket(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -65,3 +70,14 @@ class Ticket(models.Model):
     price = models.IntegerField(default = 0)
     quantity = models.IntegerField(default = 0)
     match = models.ForeignKey(Match, on_delete=models.CASCADE, default = None,null=True)
+    
+class Post(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to=Q(role__in=["admin","journalist"]))
+    body = models.TextField()
+
+    def __str__(self):
+        return self.title + ' | ' + str(self.author)
+    
+    def get_absolute_url(self):
+        return reverse('article-detail', args = [self.id])

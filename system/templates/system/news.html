@@ -1,0 +1,23 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Elite-FC News 
+    {% endblock %}
+
+    {%block content%}
+    <h1>News</h1>
+
+        <a href = "{% url 'add_post' %}" class = "btn btn-dark btn-sm"> Add Article</a> 
+  
+    <ul>
+    {% for post in object_list %}
+    <p style="line-height:0.8">
+        <li>
+            <a href ="{% url 'article-detail' post.pk %}">
+                {{post.title}}</a> - {{post.author.first_name}} {{post.author.last_name}} - <small><a href = "{% url 'update_post' post.pk %}" class = "btn btn-dark btn-sm">Edit</a>
+            </small> - <small><a href = "{% url 'delete_post' post.pk %}" class = "btn btn-dark btn-sm">Delete</a></small>
+        </li>
+    {% endfor %}
+    </p>
+    </ul> 
+
+    {% endblock %}
