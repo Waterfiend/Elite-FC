@@ -1,19 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 import system.views as views
-
 urlpatterns = [
     path('', views.hello),
-    path('register/', views.renderRegistration),
-    path('login', views.renderLogin),
-    path('registerValidate/', views.validateRegistration),
-    path('loginValidate/', views.validateLogin),
     
-    path('Profile/', views.renderProfile),
-    path('logout/',views.logout),
-    
-    
-    path('manageUser/', views.manageUsers),
-    path('editUserPage/<int:id>', views.manageUserForm),
-    path('editUserValidate/<int:id>', views.editUserValidate),
-    path('deleteUser/<int:id>', views.deleteUser),
+    path('',include('system.domains.Tickets.Tickets_urls')),
+    path('',include('system.domains.Authentication.Authentication_urls')),
+    path('',include('system.domains.ManageUsers.ManageUsers_urls')),
+    path('',include('system.domains.FieldReservation.FieldReservation_urls')),
+    path('',include('system.domains.ManagePermissions.ManagePermissions_urls')),
+
+    path('accountSummary/', views.accountSummary),
+
 ]
