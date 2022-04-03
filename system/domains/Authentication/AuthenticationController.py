@@ -17,7 +17,7 @@ def renderRegistration(request):
         'form_fields':[
             {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed'}},
             {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed'}},
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'Email must contain @'}},
+            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email'}},
             {'label':'Password','input_props':{'name':'password','type':'password'}},
             {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
             {'label':'Birth Date','input_props':{'name':'date_of_birth','type':'date'}},
@@ -57,7 +57,7 @@ def renderLogin(request):
     
     formOptions = {'form_class':'form','method':'GET','action':'/loginValidate/',
         'form_fields':[
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'Email must contain @'}},
+            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email'}},
             {'label':'Password','input_props':{'name':'password','type':'password'}},
         ]}
     form = Component('form',formOptions).create(request)
