@@ -1,8 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 import system.views as views
-
 urlpatterns = [
     path('', views.hello),
+<<<<<<< HEAD
     path('register/', views.renderRegistration),
     path('login', views.renderLogin),
     path('registerValidate/', views.validateRegistration),
@@ -23,4 +23,17 @@ urlpatterns = [
     path('deletematch/<int:match_id>', views.delete_match),
     path('editmatch/<int:match_id>', views.display_matchform),
     path('postmatch/<int:match_id>', views.post_match),
+=======
+    
+    path('',include('system.domains.Tickets.Tickets_urls')),
+    path('',include('system.domains.Authentication.Authentication_urls')),
+    path('',include('system.domains.ManageUsers.ManageUsers_urls')),
+    path('',include('system.domains.FieldReservation.FieldReservation_urls')),
+    path('',include('system.domains.ManagePermissions.ManagePermissions_urls')),
+    path('',include('system.domains.News.News_urls')),
+    path('',include('system.domains.Matches.Matches_urls')),
+    
+    path('accountSummary/', views.accountSummary),
+
+>>>>>>> Hadi_Al_Khansa's_Branch
 ]

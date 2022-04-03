@@ -5,9 +5,18 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
+<<<<<<< HEAD
 from .models import User, Post, Match
 from django.urls import reverse_lazy
 
+=======
+from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier
+from django.contrib import messages
+import hashlib
+from datetime import datetime
+import re
+# Create your views here.
+>>>>>>> Hadi_Al_Khansa's_Branch
 
 def hello(request):
     deleteLinkOptions = {
@@ -27,6 +36,7 @@ def hello(request):
     return render(request, 'system/form.html', {'title': 'Table', 'form': form})
 
 
+<<<<<<< HEAD
 def renderRegistration(request):
     title = 'Registration Form'
 
@@ -183,8 +193,29 @@ def renderProfile(request):
         }
         logoutLink = Component('link', logoutLinkOptions).create()
         return render(request, 'system/form.html', {'title': title, 'form': profileLinks(request) + form + logoutLink})
+=======
+
+
+def accountSummary(request):
+    if 'login' in request.session:
+        title= 'Account Summary'
+        user = User.objects.filter(email=request.session['login']['email']).first()
+        accountDetails = AccountSummary.objects.filter(user = user).all()
+        tableOptions ={
+                'table_header':['Transaction Name', 'Transaction Amount ($)'],
+                'table_rows':[
+                ]     
+            }
+         
+        for deatail in accountDetails:  
+            tableOptions['table_rows'].append([deatail.transaction_name,str(deatail.transaction_amount)])
+        table = Component('table',tableOptions).create() 
+        return render(request,'system/form.html',{'title':title,'form':table})   
+>>>>>>> Hadi_Al_Khansa's_Branch
     else:
+        messages.error(request,'You must Login to Reserve the Field')
         return redirect('/')
+<<<<<<< HEAD
 
 
 def logout(request):
@@ -440,3 +471,5 @@ class DeletePostView(DeleteView):
     model = Post
     template_name = 'system/delete_post.html'
     success_url = reverse_lazy('news')
+=======
+>>>>>>> Hadi_Al_Khansa's_Branch
