@@ -1,13 +1,7 @@
 from email.policy import default
 from django.db import models
-<<<<<<< HEAD
-# from django.contrib.auth.models import User
-from django.urls import reverse
-
-=======
 from django.db.models import Q
 from django.urls import reverse
->>>>>>> Hadi_Al_Khansa's_Branch
 
 # Create your models here.
 class Role(models.Model):
@@ -31,25 +25,6 @@ class User(models.Model):
     role = models.TextField(default='fan')
     def __str__(self):
         return self.first_name + ' ' + self.last_name
-<<<<<<< HEAD
-
-
-
-class Match(models.Model):
-    id = models.IntegerField(primary_key=True)
-    date = models.TextField(default="XX/XX/XX")
-    time = models.TextField(default="XX:XX")
-    team1 = models.TextField(default="")
-    team2 = models.TextField(default="")
-    score1 = models.IntegerField(default=0)
-    score2 = models.IntegerField(default=0)
-    location = models.TextField(default="")
-
-    
-class Post(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-=======
 class Salary(models.Model):
      id= models.IntegerField(primary_key=True)
      fan_tier = models.TextField()
@@ -99,16 +74,10 @@ class Ticket(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to=Q(role__in=["admin","journalist"]))
->>>>>>> Hadi_Al_Khansa's_Branch
     body = models.TextField()
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)
     
     def get_absolute_url(self):
-<<<<<<< HEAD
         return reverse('article-detail', args = [self.id])
-
-=======
-        return reverse('article-detail', args = [self.id])
->>>>>>> Hadi_Al_Khansa's_Branch
