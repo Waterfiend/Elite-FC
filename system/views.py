@@ -230,3 +230,35 @@ def editTicketValidate(request, id = 0):
             messages.error(request,'Invalid Ticket Edit')
 
         return redirect('/Tickets/')
+
+def renderShop(request):
+
+    tableOptions ={
+        'table_header':['Ticket Number', 'Match Date', "Ticket Type", "Price", "Quantity"],
+        'table_rows':[],     
+    }
+    tickets = Ticket.objects.all()
+    for ticket in tickets:
+        editLinkOptions ={
+        'url':'/buyTicket/'+str(ticket.id),
+        'text':'Buy',
+        'class':''
+        }
+        editLink = Component('link', editLinkOptions).create()
+        tableOptions['table_rows'].append([str(ticket.id), ticket.match.date, ticket.ticket_type, str(ticket.price), str(ticket.quantity), editLink])
+
+    form = Component('table',tableOptions).create()
+    return render(request,'system/form.html', {'title':'Available Tickets','form':form})
+
+def buyTicket(request):
+
+    return redirect('/TicketShop')
+
+def purchases(request):
+
+    tableOptions ={
+        'table_header':['Ticket Number', 'Match Date', "Ticket Type"],
+        'table_rows':[],     
+    }
+    form = Component('table',tableOptions).create()
+    return render(request, 'system/form.html', {'title':'Purchases Tickets','form':form})
