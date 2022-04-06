@@ -250,9 +250,25 @@ def renderShop(request):
     form = Component('table',tableOptions).create()
     return render(request,'system/form.html', {'title':'Available Tickets','form':form})
 
-def buyTicket(request):
+def buyTicket(request, id = 0):
+    
+    title = 'Purchase Form'
+    tickets = Ticket.objects.all()
+    ticket_ids = []
 
-    return redirect('/TicketShop')
+    for ticket in tickets:
+        ticket_ids.append(str(ticket.id))
+
+    formOptions = {'form_class':'form','method':'POST','action':'/TicketValidate/',
+        'form_fields':[
+            {'label':'Confirmation','field_type':'select','input_props':{'name':'ticket_type','type':'text'},'select_options':['Yes', 'No']},
+        ]}
+    form = Component('form',formOptions).create(request)
+
+    formValidationScript = FormValidationErrorsJS(['Quantity_input','Ticket Type_input','Price_input','Matches_input'])
+    formValidationScriptComponenet = Component('script',formValidationScript).create()
+
+    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet})
 
 def purchases(request):
 
