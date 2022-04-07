@@ -20,7 +20,7 @@ def createTicket(request):
             {'label':'Quantity','input_props':{'name':'quantity','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
             {'label':'Ticket Type','field_type':'select','input_props':{'name':'ticket_type','type':'text'},'select_options':['General Admission', 'VIP', 'Reserved']},
             {'label':'Price','input_props':{'name':'price','type':'text', 'pattern':"[0-9]+", 'title':'Only Numbers allowed'}},
-            {'label':'Matches','field_type':'select','input_props':{'name':'match','type':'text'},'select_options': match_ids},
+            {'label':'Match','field_type':'select','input_props':{'name':'match','type':'text','size':'4'},'select_options': match_ids},
 
         ]}
     form = Component('form',formOptions).create(request)

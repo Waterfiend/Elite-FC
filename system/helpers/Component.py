@@ -34,10 +34,13 @@ class Component:
             self.length = len(options['form_fields'])
             self.formFields = options['form_fields'][0:self.length]
         self.formClass = ''
+        self.submitClass = 'btn btn-dark'
         self.method = ''
         self.destination = ''
         if('form_class' in options):
             self.formClass = options['form_class']
+        if('submit_class' in options):
+            self.submitClass = options['submit_class']
         if('method' in options):
             self.method = options['method']
         if('action' in options):
@@ -61,21 +64,21 @@ class Component:
         element += '<input name="csrfmiddlewaretoken" value='+ csrf.get_token(request) + ' type="hidden" />'
         for i in range(0,self.length):
             if('label' in self.formFields[i] and 'input_props' in self.formFields[i]):
-                element += "<label class =" +self.labelClasses[str(i)] +" for ='" +  self.formFields[i]['label'] + ' id=' + self.formFields[i]['label'] + "_label" + "' >"+self.formFields[i]['label']+"</label>"
+                element += "<label class =" +self.labelClasses[str(i)] +" for ='" +  self.formFields[i]['label']+"'" + ' id=' +'"'+ self.formFields[i]['label'] + "_label" +'"'+ " >"+self.formFields[i]['label']+"</label>"
                 fieldType = 'input'
                 if 'field_type' in self.formFields[i]:
                     fieldType = self.formFields[i]["field_type"]
-                element += '<'+fieldType+ ' class ='+ self.inputClasses[str(i)] +' id=' +"'" + self.formFields[i]['label']  +"_input"+ "'"+' style = "display:block;"'
+                element += '<'+fieldType+ ' class ='+ '"'+self.inputClasses[str(i)] +'"'+' id=' +'"' + self.formFields[i]['label']  +"_input"+ '"'+' style = "display:block;"'
                 for (key,value) in self.formFields[i]['input_props'].items():
                     element += " "+ key+'='+'"'+value+'"'
-                element += 'required >'
+                element += ' required >'
                 if fieldType in ['select','datalist']:
                     if 'select_options' in self.formFields[i]:
                         for option in self.formFields[i]['select_options']:
                             element += '<option value=' +'"'+ option +'"'+'>' +option+'</option>'
                 element += '</'+fieldType+'>'
-        element += ' <input id = "submit" value="Submit" style = "display:block;margin-top:10px;" class = "btn btn-dark" type="submit">' 
-        element += '</form>'
+        element += ' <input id = "submit" value="Submit" style = "margin-top:10px;" class ='+ '"'+self.submitClass+'"'+' type="submit">' 
+        element += '</form>\n'
         return element
     
     def _initializeTable(self, options):
@@ -141,5 +144,5 @@ class Component:
         if('content' in options):
             self.content = options['content']
     def _createContainer(self):
-        element = '<'+self.type+ ' class='+  '"' +self.containerClass + '"'+ '>'+ self.content + '</'+self.type+'>'
+        element = '<'+self.type+ ' class='+  '"' +self.containerClass + '"'+ '>'+ self.content + '</'+self.type+'>\n'
         return element

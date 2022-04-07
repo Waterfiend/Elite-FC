@@ -7,7 +7,7 @@ from django.contrib import messages
 def managePermissions(request):
     addOptions = {
                 'url':'/CreatePermission/',
-                'text':'Add Ticket',
+                'text':'Add Permission',
                 'class':'btn btn-success'
             }
     addLink = Component('link', addOptions).create()

@@ -51,8 +51,8 @@ def manageUserForm(request,id=0):
             {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed', 'value':values['first_name']}},
             {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed','value':values['last_name']}},
             {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'Email must contain @','value':values['email']}},
-            {'label':'Password','input_props':{'name':'password','type':'password'}},
-            {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
+            # {'label':'Password','input_props':{'name':'password','type':'password'}},
+            # {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
             {'label':'Birth Date','input_props':{'name':'date_of_birth','type':'date','value':values['date_of_birth']}},
             {'label':'Fan Tier','field_type':'select','input_props':{'name':'fan_tier','type':'text','value':values['fan_tier']},'select_options':['Bronze','Silver','Gold','Elite']},
             {'label':'Role','field_type':'select','input_props':{'name':'role','type':'text','value':values['role']},'select_options':['fan','coach','player','journalist','admin']},
@@ -62,18 +62,18 @@ def manageUserForm(request,id=0):
     formValidationScript = FormValidationErrorsJS(['First Name_input','Last Name_input','Email_input','Password_input','Confirm Password_input', 'Birth Date_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
     
-    confirmPasswordValidationScript = ConfirmPasswordErrorJS('Password_input','Confirm Password_input')
-    confirmPasswordValidationScriptComponenet = Component('script',confirmPasswordValidationScript).create()
+    # confirmPasswordValidationScript = ConfirmPasswordErrorJS('Password_input','Confirm Password_input')
+    # confirmPasswordValidationScriptComponenet = Component('script',confirmPasswordValidationScript).create()
     
-    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet+confirmPasswordValidationScriptComponenet})
+    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet})
 def editUserValidate(request,id):
     if(request.method == 'POST'):
         infoDict = {}
         for key in request.POST:
             infoDict[key]=request.POST[key]
         infoDict.pop('csrfmiddlewaretoken')
-        infoDict.pop('confirm_password')
-        infoDict['password'] = hashlib.md5(infoDict['password'].encode('utf-8')).hexdigest()
+        # infoDict.pop('confirm_password')
+        
         try:
             existingRecord = User.objects.filter(email=infoDict['email']).first()
         except:
@@ -87,6 +87,7 @@ def editUserValidate(request,id):
                 existingRecord.save()
                 messages.success(request,'Update Successful')
             else:
+                infoDict['password'] = hashlib.md5(infoDict['date_of_birth'].encode('utf-8')).hexdigest()
                 User.objects.create(**infoDict)
                 messages.success(request,'Add Successful')
         return redirect('/manageUser')

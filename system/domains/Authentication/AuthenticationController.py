@@ -83,7 +83,7 @@ def validateLogin(request):
         return redirect('/Profile/')
 def profileLinks(request):
     existingRecord = User.objects.filter(email=request.session['login']['email']).first()
-    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Players':'/manageUser'}
+    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Players':'/Players','Manage Permissions':'/managePermissions'}
     generatedSensitiveLinks=[]
     for key,value in sensitivePaths.items():
         AllowedRoles = Permission.objects.filter(path=value).values_list('role',flat=True)
@@ -95,9 +95,10 @@ def profileLinks(request):
         
     accountSummaryLink = Component('link',{'url':'/accountSummary/', 'text':'Account Summary'}).create()
     reportsLink = Component('link',{'url':'/manageUser/', 'text':'Reports'}).create()
+    changePasswordLink = Component('link',{'url':'/changePasswordForm/', 'text':'Change Password'}).create()
     
     staffControlsDivisionTitle = Component('container',{'type':'h4', 'content':'Staff Control'}).create()
-    staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+accountSummaryLink+reportsLink}).create()
+    staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+accountSummaryLink+reportsLink+changePasswordLink}).create()
     
     servicesDivisionTitle = Component('container',{'type':'h4', 'content':'Services'}).create()
     servicesDivision = Component('container',{'type':'div','class':'linkContainer', 'content':servicesDivisionTitle+"".join(generatedSensitiveLinks)}).create()
@@ -130,6 +131,38 @@ def renderProfile(request):
         return render(request,'system/form.html',{'title':title,'form':profileLinks(request)+form+logoutLink})  
     else:
         return redirect('/')
+def changePasswordForm(request):
+    title = 'Change Password'
+    
+    formOptions = {'form_class':'form','method':'POST','action':'/validatePassword/',
+        'form_fields':[
+            {'label':'New Password','input_props':{'name':'password','type':'password'}},
+            {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
+        ]}
+    form = Component('form',formOptions).create(request)
+
+    formValidationScript = FormValidationErrorsJS(['New Password_input','Confirm Password_input'])
+    formValidationScriptComponenet = Component('script',formValidationScript).create()
+    
+    confirmPasswordValidationScript = ConfirmPasswordErrorJS('Password_input','Confirm Password_input')
+    confirmPasswordValidationScriptComponenet = Component('script',confirmPasswordValidationScript).create()
+    
+    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet+confirmPasswordValidationScriptComponenet})
+def validatePassword(request):
+    infoDict = {}
+    for key in request.POST:
+        infoDict[key]=request.POST[key]
+    infoDict.pop('csrfmiddlewaretoken')
+    infoDict.pop('confirm_password')
+    infoDict['password'] = hashlib.md5(infoDict['password'].encode('utf-8')).hexdigest()
+    try:
+        existingRecord = User.objects.filter(email=request.session['login']['email']).first()
+    except:
+        existingRecord = None
+    existingRecord.__dict__.update(infoDict)
+    existingRecord.save()
+    messages.success(request,'Update Successful')
+    return redirect('/Profile')
 def logout(request):
     if 'login' in request.session:
         request.session.pop('login')

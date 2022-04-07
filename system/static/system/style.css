@@ -34,13 +34,13 @@
 }
 
 .linkContainer{
-    width:150px;
+    width:180px;
     margin:0 10px;
 }
 .linkContainer a{
     display: block;
     height:35px;
-    width:140px;
+    width:180px;
     line-height: 35px;
     background-color: black;
     color: white;
@@ -52,6 +52,70 @@
 .profileLinksMenu{
     display: flex;
     flex-wrap: wrap;
+}
+.calendar {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    margin-top: 10px;;
+    font-size: 13px;
+  }
+  
+.calendar tr, .calendar td {
+border: 1px solid black;
+}
+
+.calendar th {
+padding: 10px;
+text-align: center;
+background-color:black;
+color:white;
+}
+
+.calendar td {
+width: 14.3%;
+height: 14.3%;
+padding: 20px 0px 0px 5px;
+background-color: aliceblue;
+}
+.home_calendar_with_title{
+    min-width:100%;
+}
+.month {
+}
+
+.date {
+overflow-wrap: break-all;
+position:absolute;
+top:0;
+}
+
+.home_cal{
+    width:97%;
+    height: 500px;
+    margin: 0 10px;
+}
+.latest_result_container{
+    width:100%;
+    background-color:whitesmoke;
+    margin: 0 10px;
+}
+.latest_result_with_title{
+    min-width: 100%;
+    margin: 0 10px;
+}
+.latest_result{
+    border: 1px solid black;
+    width:100%;
+}
+.latest_result td{
+    text-align: center;
+}
+.home_container{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width:100%
 }
 @media only screen and (max-width: 986px) {
     /* For mobile phones: */

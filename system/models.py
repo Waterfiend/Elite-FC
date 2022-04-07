@@ -30,11 +30,6 @@ class Salary(models.Model):
      fan_tier = models.TextField()
      role = models.TextField()
      salary = models.IntegerField(default=0)
-     
-class Player(models.Model):
-    id= models.IntegerField(primary_key=True)
-    salary = models.ForeignKey(Salary, on_delete=models.CASCADE, default = None,null=True)
-   
 class FieldReservation(models.Model):
     id = models.IntegerField(primary_key=True)
     date = models.TextField()
@@ -54,6 +49,7 @@ class FanTierFee(models.Model):
     fan_tier = models.TextField()
     fee = models.IntegerField(default=0)
 
+
 class Match(models.Model):
     id = models.IntegerField(primary_key=True)
     date = models.TextField(default = "XX/XX/XX")
@@ -63,6 +59,19 @@ class Match(models.Model):
     score1 = models.IntegerField(default = 0)
     score2 = models.IntegerField(default = 0)
     location = models.TextField(default="")
+class Player(models.Model):
+    id= models.IntegerField(primary_key=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=None)
+    matches = models.ManyToManyField(Match,related_name="players",through='MatchPlayerDetails')
+class MatchPlayerDetails(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    attempted_shots = models.IntegerField(default=0)
+    goals = models.IntegerField(default=0)
+    attempted_passes = models.IntegerField(default=0)
+    made_passes = models.IntegerField(default=0)
+    fouls = models.IntegerField(default=0)
+    minutes_played = models.IntegerField(default=0)
 
 class Ticket(models.Model):
     id = models.IntegerField(primary_key=True)
