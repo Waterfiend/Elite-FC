@@ -2,6 +2,7 @@ from email.policy import default
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Role(models.Model):
@@ -81,3 +82,26 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return reverse('article-detail', args = [self.id])
+
+class PlayerStat(models.Model):
+    class currentStatus(models.TextChoices):
+        INJURED = 'Injured', _('Injured')
+        READY = 'Ready to play', _('Ready to play')
+        UNKNOWN = 'Unknown', _('Unknown')
+    class currentPosition(models.TextChoices):
+        ATTACKER = 'Attacker', _('Attacker')
+        MIDFIELDER = 'Midfielder', _('Midfielder')
+        DEFENDER = 'Defender', _('Defender')
+        GOALKEEPER = 'Goalkeeper', _('Goalkeeper')
+
+    name = models.CharField(max_length=50)
+    number = models.CharField(max_length=4)
+    status = models.TextField(choices = currentStatus.choices,default= currentStatus.READY)
+    position = models.TextField(choices = currentPosition.choices)
+    age = models.IntegerField(default=0)
+    appearances = models.IntegerField(default=0)
+    goals = models.IntegerField(default=0)
+    assists = models.IntegerField(default=0)
+    
+    def get_absolute_url(self):
+        return reverse('player-detail', args = [self.id])

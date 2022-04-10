@@ -1,0 +1,12 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Edit Player
+    {% endblock %}
+
+    {%block content%}
+    <h1>Update Player</h1>
+    <form method= "POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-dark">Update</button>
+    {% endblock %}

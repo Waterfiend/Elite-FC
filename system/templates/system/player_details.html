@@ -1,0 +1,25 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        {{playerstat.name}}
+    {% endblock %}
+
+    {%block content%}
+    <h1>{{playerstat.name}}</h1>
+    
+    <hr>
+    <p style="font-size:20px">Position: {{playerstat.position}}</p>
+    <p style="font-size:20px">Number: {{playerstat.number}}</p>
+    <p style="font-size:20px">Status: {{playerstat.status}}</p>
+    <p style="font-size:20px">Age: {{playerstat.age}}</p>
+    <p style="font-size:20px">Appearances: {{playerstat.appearances}}</p>
+    <p style="font-size:20px">Goals: {{playerstat.goals}}</p>
+    <p style="font-size:20px">Assists: {{playerstat.assists}}</p>
+
+    <br/><br>
+    <hr>
+    <br/><br>
+    <a href = "{% url 'playerstat' %}" class = "btn btn-dark"> Back to Player Stats</a> - <a href = "{% url 'update_player' playerstat.pk %}" class = "btn btn-dark">Edit</a>
+    - <a href = "{% url 'delete_player' playerstat.pk %}" class = "btn btn-dark">Delete</a>
+    
+
+    {% endblock %}

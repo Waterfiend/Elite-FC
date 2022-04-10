@@ -10,6 +10,7 @@ urlpatterns = [
     path('',include('system.domains.ManagePermissions.ManagePermissions_urls')),
     path('',include('system.domains.News.News_urls')),
     path('',include('system.domains.Matches.Matches_urls')),
+    path('',include('system.domains.PlayerStat.PlayerStat_urls')),
     
     path('accountSummary/', views.accountSummary),
 
