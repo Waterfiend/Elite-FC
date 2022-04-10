@@ -22,7 +22,8 @@ class Calendar(HTMLCalendar):
                 return f"<td style='position:relative;background-color:MediumTurquoise'><div class='date'>{str(day)+' Today'}</div> {d} </td>"
             else:
                 return f"<td style='position:relative;'><div class='date'>{day}</div> {d} </td>"
-            
+        else:
+             return f"<td style='position:relative;'><div class='date'></div></td>"
         return '<td></td>'
     def formatweek(self, theweek, events):
         week = ''

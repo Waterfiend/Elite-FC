@@ -37,6 +37,7 @@ class Component:
         self.submitClass = 'btn btn-dark'
         self.method = ''
         self.destination = ''
+        self.selected = ''
         if('form_class' in options):
             self.formClass = options['form_class']
         if('submit_class' in options):
@@ -75,7 +76,10 @@ class Component:
                 if fieldType in ['select','datalist']:
                     if 'select_options' in self.formFields[i]:
                         for option in self.formFields[i]['select_options']:
-                            element += '<option value=' +'"'+ option +'"'+'>' +option+'</option>'
+                            self.selected = ''
+                            if 'selected' in self.formFields[i]['input_props'] and self.formFields[i]['input_props']['selected'] == option:
+                                self.selected = 'selected'
+                            element += '<option value=' +'"'+ option +'"'+ self.selected +'>' +option+'</option>'
                 element += '</'+fieldType+'>'
         element += ' <input id = "submit" value="Submit" style = "margin-top:10px;" class ='+ '"'+self.submitClass+'"'+' type="submit">' 
         element += '</form>\n'

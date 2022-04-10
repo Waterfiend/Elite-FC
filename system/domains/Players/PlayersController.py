@@ -3,14 +3,23 @@ from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS
 from ...models import User,Match,Player,MatchPlayerDetails
 from django.contrib import messages
+from helpers.SearchBar import Search
 import re
 
 def renderPlayers(request):
+    backLinkOptions ={
+            'url':'/Profile/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+            }
+    backLink = Component('link',backLinkOptions).create()
     tableOptions ={
         'table_header':['Player', 'Rank'],
         'table_rows':[],     
     }
-    playerUsers = User.objects.filter(role='player')
+    concatination = {'full_name':['first_name',' ','last_name']}
+    (searchBar,users) = Search(request,User,concatination)
+    playerUsers = users.filter(role='player') or User.objects.filter(role='player')
     for playerUser in playerUsers:
         playerLinkOptions ={
         'url':'/Matches/'+str(playerUser.id),
@@ -21,7 +30,7 @@ def renderPlayers(request):
         tableOptions['table_rows'].append([playerLink,playerUser.fan_tier])
 
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html', {'title':'Available Tickets','form':form})
+    return render(request,'system/form.html', {'title':'Players','form':backLink+searchBar+form})
     
 def renderPlayerMatches(request,id):
     tableOptions ={
@@ -53,12 +62,18 @@ def renderPlayerMatches(request,id):
         tableOptions['table_rows'].append([matchInfo,str(matchDetails.attempted_shots),str(matchDetails.goals),str(matchDetails.attempted_passes),str(matchDetails.made_passes),str(matchDetails.fouls),str(matchDetails.minutes_played),editLink,deleteLink])
     addLinkOptions ={
             'url':'/playerStatisticsForm/'+str(playerUser.id)+'/'+str(0),
-            'text':'Add User',
+            'text':'Add Match Statistic',
             'class':'btn btn-success'
         }
     addLink = Component('link',addLinkOptions).create() 
+    backLinkOptions ={
+            'url':'/Players/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+            }
+    backLink = Component('link',backLinkOptions).create()
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html', {'title':'Available Tickets','form':form+addLink})
+    return render(request,'system/form.html', {'title':playerUser.first_name+"'s Statistics",'form':backLink+addLink+form})
 
 def playerStatisticsForm(request,id=0,match_id=0):
     if match_id != 0:
@@ -87,14 +102,19 @@ def playerStatisticsForm(request,id=0,match_id=0):
             {'label':'Made Passes','input_props':{'name':'made_passes','type':'number','title':'Only numbers allowed','value':str(values['made_passes'])}},
             {'label':'Fouls','input_props':{'name':'fouls','type':'number','title':'Only numbers allowed','value':str(values['fouls'])}},
             {'label':'Minutes Played','input_props':{'name':'minutes_played','type':'number','value':str(values['minutes_played'])}},
-            {'label':'Match','field_type':'select','input_props':{'name':'match','type':'text','size':'4','value':playerMatch_id},'select_options': match_ids},
+            {'label':'Match','field_type':'select','input_props':{'name':'match','type':'text','size':'4','selected':playerMatch_id},'select_options': match_ids},
         ]}
     form = Component('form',formOptions).create(request)
 
     formValidationScript = FormValidationErrorsJS(['Attempted Shots_input','Goals_input','Attempted Passes_input','Made Passes_input','Fouls_input', 'Minutes Played_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
-    
-    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet})
+    backLinkOptions ={
+            'url':'/Matches/'+str(id),
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+            }
+    backLink = Component('link',backLinkOptions).create()
+    return render(request,'system/form.html',{'title':title,'form':backLink+form+formValidationScriptComponenet})
 
 def editStatisticsValidate(request,id,match_id):
     if(request.method == 'POST'):

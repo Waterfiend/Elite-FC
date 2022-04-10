@@ -9,4 +9,6 @@ urlpatterns = [
     path('deleteTicket/<int:id>', views.deleteTicket),
     path('editTicket/<int:id>', views.editTicket),
     path('editTicketValidate/', views.editTicketValidate),
+    path('ticketsShop/', views.ticketsShop),
+    path('buyTicket/<int:id>', views.buyTicket),
 ]

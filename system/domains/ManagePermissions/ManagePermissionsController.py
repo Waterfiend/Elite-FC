@@ -11,6 +11,12 @@ def managePermissions(request):
                 'class':'btn btn-success'
             }
     addLink = Component('link', addOptions).create()
+    backLinkOptions ={
+            'url':'/Profile/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+    }
+    backLink = Component('link',backLinkOptions).create()
     tableOptions ={
                 'table_header':['Role', 'Allowed Paths',],
                 'table_rows':[],     
@@ -26,7 +32,7 @@ def managePermissions(request):
         tableOptions['table_rows'].append([permission.role, permission.path, deleteLink])
 
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html', {'title':'Manage Permissions','form':form + addLink})
+    return render(request,'system/form.html', {'title':'Manage Permissions','form':backLink+addLink+form })
 def deletePermission(request,id):
     existingRecord = Permission.objects.filter(id=id)
     existingRecord.delete()
@@ -34,7 +40,12 @@ def deletePermission(request,id):
 
 def createPermission(request):
     title = 'Create Permission'
-
+    backLinkOptions ={
+            'url':'/managePermissions/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+    }
+    backLink = Component('link',backLinkOptions).create()
     formOptions = {'form_class':'form','method':'POST','action':'/permissionValidate/',
         'form_fields':[
             {'label':'Role','input_props':{'name':'role','type':'text', 'pattern':"[A-Za-z1-9/]+", 'title':'Only letters and numbers allowed'}},
@@ -45,7 +56,7 @@ def createPermission(request):
     formValidationScript = FormValidationErrorsJS(['Role_input','Path_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
     
-    return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet})
+    return render(request,'system/form.html',{'title':title,'form':backLink+form+formValidationScriptComponenet})
 def permissionValidate(request, id = 0):
     if(request.method == 'POST'):
         infoDict = request.POST.copy() # POST takes all what is in Form from submit

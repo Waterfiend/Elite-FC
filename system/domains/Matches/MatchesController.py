@@ -3,17 +3,26 @@ from django.shortcuts import render, redirect
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS
 from ...models import Match
+from helpers.SearchBar import Search
 """
 Displays the schedule of the playing teams.
 """
 def display_schedule(request):
-    matches = Match.objects.all()
+    concatination = {}
+    (searchBar,matches) = Search(request,Match,concatination)
+    matches = matches or Match.objects.all()
     addLinkOptions = {
         'url': '/editmatch/' + str(0),
         'text': 'Add Match',
         'class': 'btn btn-success'
     }
     addLink = Component('link', addLinkOptions).create()
+    backLinkOptions ={
+            'url':'/Profile/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+    }
+    backLink = Component('link',backLinkOptions).create()
     table_options = {
         'table_header': ['Team 1', 'Team 2', 'Score', 'Location', 'Date', 'Edit', 'Delete'],
         # Note these are examples of a generic schedule until they are stored in the database
@@ -36,7 +45,7 @@ def display_schedule(request):
         table_options['table_rows'].append(
             [match.team1, match.team2, str(match.score1) + "-" + str(match.score2), match.location, match.date, edit_link, delete_link])
     form = Component('table', table_options).create()
-    return render(request, 'system/form.html', {'title': 'Matches', 'form': form + addLink})
+    return render(request, 'system/form.html', {'title': 'Matches', 'form': backLink+addLink+searchBar+form})
 
 
 def delete_match(request, match_id):
@@ -57,6 +66,12 @@ def delete_match(request, match_id):
 
 
 def display_matchform(request, match_id=0):
+    backLinkOptions ={
+            'url':'/schedule/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+    }
+    backLink = Component('link',backLinkOptions).create()
     if match_id != 0:
         existing_match = Match.objects.filter(id=match_id).first()
         title = 'Edit ' + existing_match.team1 + ' VS. ' + existing_match.team2
@@ -89,7 +104,7 @@ def display_matchform(request, match_id=0):
         ['Team 1_input', 'Team 2_input', 'Date_input', 'Time_input', 'Location_input', 'Score (Team 1)_input',
          'Score (Team 2)_input'])
     formValidationScriptComponent = Component('script', formValidationScript).create()
-    return render(request, 'system/form.html', {'title': title, 'form': form + formValidationScriptComponent})
+    return render(request, 'system/form.html', {'title': title, 'form': backLink+form + formValidationScriptComponent})
 
 
 def post_match(request, match_id):

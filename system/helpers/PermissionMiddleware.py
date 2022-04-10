@@ -15,7 +15,9 @@ SKIP_PATHS = ['^[/]{1}$',
               "^/loginValidate",
               "^/changePasswordForm",
               "^/validatePassword",
-              "^/accountSummary"
+              "^/accountSummary",
+              "^/ticketsShop",
+              "^/buyTicket",
               ]
 
 def permissionMiddleware(get_response):

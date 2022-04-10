@@ -98,13 +98,13 @@ def profileLinks(request):
     changePasswordLink = Component('link',{'url':'/changePasswordForm/', 'text':'Change Password'}).create()
     
     staffControlsDivisionTitle = Component('container',{'type':'h4', 'content':'Staff Control'}).create()
-    staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+accountSummaryLink+reportsLink+changePasswordLink}).create()
+    staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+"".join(generatedSensitiveLinks)}).create()
     
     servicesDivisionTitle = Component('container',{'type':'h4', 'content':'Services'}).create()
-    servicesDivision = Component('container',{'type':'div','class':'linkContainer', 'content':servicesDivisionTitle+"".join(generatedSensitiveLinks)}).create()
+    servicesDivision = Component('container',{'type':'div','class':'linkContainer', 'content':servicesDivisionTitle+accountSummaryLink+reportsLink+changePasswordLink}).create()
 
     menuTitle = Component('container',{'type':'summary', 'content':'Open Menu'}).create()
-    menuContianer = Component('container',{'type':'div', 'class':'profileLinksMenu','content':staffControlsDivision+servicesDivision}).create()
+    menuContianer = Component('container',{'type':'div', 'class':'profileLinksMenu','content':servicesDivision+staffControlsDivision}).create()
     profileLinksMenu = Component('container',{'type':'details', 'content':menuTitle+menuContianer}).create()
     return profileLinksMenu
 
