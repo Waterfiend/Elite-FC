@@ -15,7 +15,7 @@
     <br/><br>
     <hr>
     <br/><br>
-    <a href = "{% url 'news' %}" class = "btn btn-dark"> Back to News</a> - <a href = "{% url 'update_post' post.pk %}" class = "btn btn-dark">Edit</a>
-    - <a href = "{% url 'delete_post' post.pk %}" class = "btn btn-dark">Delete</a>
+    <a href = "{% url 'news' %}" class = "btn btn-dark"> Back to News</a> - <a href = "{% url 'update_post' post.pk %}" class = "btn btn-success">Edit</a>
+    - <a href = "{% url 'delete_post' post.pk %}" class = "btn btn-danger">Delete</a>
 
     {% endblock %}
