@@ -12,5 +12,7 @@ urlpatterns = [
     path('',include('system.domains.Matches.Matches_urls')),
     path('',include('system.domains.Players.Players_urls')),
     path('accountSummary/', views.accountSummary),
+    path('tierEnrollment/', views.tierEnrollment),
+    path('tierSelection/<int:id>', views.tierSelection),
 
 ]
