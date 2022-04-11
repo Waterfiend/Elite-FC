@@ -73,4 +73,33 @@ def accountSummary(request):
     for deatail in accountDetails:  
         tableOptions['table_rows'].append([deatail.transaction_name,str(deatail.transaction_amount)])
     table = Component('table',tableOptions).create() 
-    return render(request,'system/form.html',{'title':title,'form':table})   
+    return render(request,'system/form.html',{'title':title,'form':table}) 
+
+def tierEnrollment(request):
+    title= 'Tier Enrollment'
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    tiers = Discounts.objects.all()
+    tableOptions ={
+            'table_header':['Tier', 'Discount Percentage'],
+            'table_rows':[
+            ]     
+        }
+        
+    for deatail in tiers:  
+        selectLinkOptions ={
+            'url':'/tierSelection/'+str(deatail.id),
+            'text':'Select',
+            'class':'btn btn-dark'
+        }
+        selectLink = Component('link',selectLinkOptions).create()
+        tableOptions['table_rows'].append([deatail.fan_tier,str(deatail.discount),selectLink])
+    table = Component('table',tableOptions).create() 
+    return render(request,'system/form.html',{'title':title,'form':table}) 
+
+def tierSelection(request,id):
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    user.fan_tier= Discounts.objects.filter(id=id).first().fan_tier
+    user.save()
+    messages.success(request,'Tier changed successfully')
+    return redirect('/tierEnrollment')
+
