@@ -3,6 +3,7 @@ from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS
 from ...models import Permission
 from django.contrib import messages
+from helpers.SearchBar import Search
 
 def managePermissions(request):
     addOptions = {
@@ -21,7 +22,9 @@ def managePermissions(request):
                 'table_header':['Role', 'Allowed Paths',],
                 'table_rows':[],     
             }
-    permissions = Permission.objects.all()
+    concatination = {}
+    (searchBar,users) = Search(request,Permission,concatination)
+    permissions = users or Permission.objects.all()
     for permission in permissions:
         deleteLinkOptions ={
         'url':'/deletePermission/'+str(permission.id),
@@ -32,7 +35,7 @@ def managePermissions(request):
         tableOptions['table_rows'].append([permission.role, permission.path, deleteLink])
 
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html', {'title':'Manage Permissions','form':backLink+addLink+form })
+    return render(request,'system/form.html', {'title':'Manage Permissions','form':backLink+addLink+searchBar+form })
 def deletePermission(request,id):
     existingRecord = Permission.objects.filter(id=id)
     existingRecord.delete()

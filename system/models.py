@@ -2,6 +2,7 @@ from email.policy import default
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Role(models.Model):
@@ -61,8 +62,26 @@ class Match(models.Model):
     location = models.TextField(default="")
 class Player(models.Model):
     id= models.IntegerField(primary_key=True)
-    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=None)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=None,limit_choices_to=Q(role__in=["player"]))
     matches = models.ManyToManyField(Match,related_name="players",through='MatchPlayerDetails')
+    class currentStatus(models.TextChoices):
+        INJURED = 'Injured', _('Injured')
+        READY = 'Ready to play', _('Ready to play')
+        UNKNOWN = 'Unknown', _('Unknown')
+    class currentPosition(models.TextChoices):
+        ATTACKER = 'Attacker', _('Attacker')
+        MIDFIELDER = 'Midfielder', _('Midfielder')
+        DEFENDER = 'Defender', _('Defender')
+        GOALKEEPER = 'Goalkeeper', _('Goalkeeper')
+    
+    number = models.CharField(max_length=4,default=0)
+    status = models.TextField(choices = currentStatus.choices,default= currentStatus.READY)
+    position = models.TextField(choices = currentPosition.choices,default=currentPosition.MIDFIELDER)
+    def __str__(self):
+        return self.user.first_name + ' ' + self.user.last_name
+    def get_absolute_url(self):
+        return reverse('player-detail', args = [self.id])
+    
 class MatchPlayerDetails(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)

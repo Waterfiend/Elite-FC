@@ -4,6 +4,8 @@ from system.helpers.FormValidationJS import FormValidationErrorsJS
 from ...models import User,Match,Player,MatchPlayerDetails
 from django.contrib import messages
 from helpers.SearchBar import Search
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 import re
 
 def renderPlayers(request):
@@ -154,3 +156,28 @@ def deleteStatistics(request,id,match_id):
     existingRecord = MatchPlayerDetails.objects.filter(player__user__id=id,match__id=match_id)
     existingRecord.delete()
     return redirect('/Matches/'+str(id))
+
+
+class HomeView(ListView):
+    model = Player
+    template_name = 'system/playerstat.html'
+    
+class PlayerDetailView(DetailView): 
+    model = Player
+    template_name = 'system/player_details.html'
+
+
+class AddPlayerView(CreateView):
+    model = Player
+    template_name = 'system/add_player.html'
+    fields = ['user','number','status','position']
+
+class UpdatePlayerView(UpdateView):
+    model = Player
+    template_name = 'system/update_player.html'
+    fields = ['user','number','status','position']
+
+class DeletePlayerView(DeleteView):
+    model = Player
+    template_name = 'system/delete_player.html'
+    success_url = reverse_lazy('playerstat')
