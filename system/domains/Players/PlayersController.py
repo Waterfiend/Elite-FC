@@ -176,7 +176,7 @@ class AddPlayerView(CreateView):
 class UpdatePlayerView(UpdateView):
     model = Player
     template_name = 'system/update_player.html'
-    fields = ['user','number','status','position']
+    fields = ['number','status','position']
 
 class DeletePlayerView(DeleteView):
     model = Player
