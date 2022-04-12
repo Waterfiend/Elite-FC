@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from ...models import User
+from ...models import User,Role,Tier
 from django.contrib import messages
 
 from helpers.SearchBar import Search
@@ -67,17 +67,22 @@ def manageUserForm(request,id=0):
     else:
         title = 'Add User'
         values = {field.name:'' for field in User._meta.fields}
-    
+    tiers = []
+    for tier in Tier.objects.all():
+        tiers.append(tier.fan_tier)
+    roles = []
+    for role in Role.objects.all():
+        roles.append(role.role)
     formOptions = {'form_class':'form','method':'POST','action':'/editUserValidate/'+str(id),
         'form_fields':[
-            {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed', 'value':values['first_name']}},
-            {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z]+", 'title':'Only letters allowed','value':values['last_name']}},
+            {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed', 'value':values['first_name']}},
+            {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed','value':values['last_name']}},
             {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'Email must contain @','value':values['email']}},
             # {'label':'Password','input_props':{'name':'password','type':'password'}},
             # {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
             {'label':'Birth Date','input_props':{'name':'date_of_birth','type':'date','value':values['date_of_birth']}},
-            {'label':'Fan Tier','field_type':'select','input_props':{'name':'fan_tier','type':'text','selected':values['fan_tier']},'select_options':['Bronze','Silver','Gold','Elite']},
-            {'label':'Role','field_type':'select','input_props':{'name':'role','type':'text','selected':values['role']},'select_options':['fan','coach','player','journalist','admin']},
+            {'label':'Fan Tier','field_type':'select','input_props':{'name':'fan_tier','type':'text','selected':values['fan_tier']},'select_options':tiers},
+            {'label':'Role','field_type':'select','input_props':{'name':'role','type':'text','selected':values['role']},'select_options':roles},
         ]}
     form = Component('form',formOptions).create(request)
 
@@ -102,13 +107,14 @@ def editUserValidate(request,id):
         # infoDict.pop('confirm_password')
         
         try:
-            existingRecord = User.objects.filter(email=infoDict['email']).first()
+            existingEmailRecord = User.objects.filter(email=infoDict['email']).first()
         except:
-            existingRecord = None
+            existingEmailRecord = None
         
-        if(existingRecord is not None and existingRecord.id != id):
+        if(existingEmailRecord is not None and existingEmailRecord.id != id):
             messages.error(request,'Email '+ infoDict['email'] +' already exists. Please use a different email')
         else:
+            existingRecord = User.objects.filter(id=id).first()
             if id !=0:
                 existingRecord.__dict__.update(infoDict)
                 existingRecord.save()

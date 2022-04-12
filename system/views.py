@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier
+from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier,Salary
 from django.contrib import messages
 import hashlib
 from datetime import datetime
@@ -73,27 +73,38 @@ def accountSummary(request):
     for deatail in accountDetails:  
         tableOptions['table_rows'].append([deatail.transaction_name,str(deatail.transaction_amount)])
     table = Component('table',tableOptions).create() 
-    return render(request,'system/form.html',{'title':title,'form':table}) 
+    conditions = Component('container',{'type':'p','class':'account-summary-text','content':
+        '''Payments can be made at the Elite Club cashiers And at the Banks in cash or CERTIFIED checksBased 
+        on the format: "Name of the bank, Elite Club Account"Payment for till February 28,2022 InclusiveList of accepted Banks 
+        for Payments are :BANKMED, AUDI sal, BYBLOS, BML, SGBL, ARAB, BLOM, FransaFor Bank Transfers to CITIBANK, 
+        Account: EliteFCIBAN LB94011500000000000600224166 for USDIBAN LB22011500000000000600224395 for INTERNATIONAL TRANSFERS ONLYIBAN LB69011500000000000600224034 for LBPSwift Code CITILBBEAUB VAT # 123329-601 / Club Fees are VAT 11% 
+        exempt.Fees could be paid in US Dollars or Lebanese Poundsat the exchange rate prevailing at the time of payment'''}).create()
+    print(conditions)
+    return render(request,'system/form.html',{'title':title,'form':table+conditions}) 
 
 def tierEnrollment(request):
     title= 'Tier Enrollment'
     user = User.objects.filter(email=request.session['login']['email']).first()
-    tiers = Discounts.objects.all()
-    tableOptions ={
-            'table_header':['Tier', 'Discount Percentage'],
-            'table_rows':[
-            ]     
-        }
-        
-    for deatail in tiers:  
-        selectLinkOptions ={
-            'url':'/tierSelection/'+str(deatail.id),
-            'text':'Select',
-            'class':'btn btn-dark'
-        }
-        selectLink = Component('link',selectLinkOptions).create()
-        tableOptions['table_rows'].append([deatail.fan_tier,str(deatail.discount),selectLink])
-    table = Component('table',tableOptions).create() 
+    if user.role in ['fan','admin']:
+        tiers = Discounts.objects.all()
+        tableOptions ={
+                'table_header':['Tier', 'Discount Percentage','Fee ($/month)'],
+                'table_rows':[
+                ]     
+            }
+            
+        for deatail in tiers:  
+            selectLinkOptions ={
+                'url':'/tierSelection/'+str(deatail.id),
+                'text':'Select',
+                'class':'btn btn-dark'
+            }
+            selectLink = Component('link',selectLinkOptions).create()
+            fee = -Salary.objects.filter(role='fan',fan_tier=deatail.fan_tier).first().salary
+            tableOptions['table_rows'].append([deatail.fan_tier,str(deatail.discount),str(fee),selectLink])
+        table = Component('table',tableOptions).create()
+    else:
+        table = Component('container',{'type':'h3','content':'Sorry, You must be a fan to use this feature'}).create()
     return render(request,'system/form.html',{'title':title,'form':table}) 
 
 def tierSelection(request,id):

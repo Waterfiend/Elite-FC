@@ -82,10 +82,10 @@ def display_matchform(request, match_id=0):
     formOptions = {'form_class': 'form', 'method': 'POST', 'action': '/postmatch/' + str(match_id),
                        'form_fields': [
                            {'label': 'Team 1',
-                            'input_props': {'name': 'team1', 'type': 'text', 'pattern': "[A-Za-z]+",
+                            'input_props': {'name': 'team1', 'type': 'text', 'pattern': "[A-Za-z\s]+",
                                             'title': 'Only letters allowed', 'value': values['team1']}},
                            {'label': 'Team 2',
-                            'input_props': {'name': 'team2', 'type': 'text', 'pattern': "[A-Za-z]+",
+                            'input_props': {'name': 'team2', 'type': 'text', 'pattern': "[A-Za-z\s]+",
                                             'title': 'Only letters allowed', 'value': values['team2']}},
                            {'label': 'Date',
                             'input_props': {'name': 'date', 'type': 'date', 'value': values['date']}},

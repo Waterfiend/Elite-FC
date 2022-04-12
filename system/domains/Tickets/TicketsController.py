@@ -30,7 +30,7 @@ def createTicket(request):
         ]}
     form = Component('form',formOptions).create(request)
 
-    formValidationScript = FormValidationErrorsJS(['Quantity_input','Ticket Type_input','Price_input','Matches_input'])
+    formValidationScript = FormValidationErrorsJS(['Quantity_input','Ticket Type_input','Price_input','Match_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
 
 
