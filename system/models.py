@@ -61,7 +61,7 @@ class Match(models.Model):
     score2 = models.IntegerField(default = 0)
     location = models.TextField(default="")
 class Player(models.Model):
-    id= models.IntegerField(primary_key=True)
+    # id= models.IntegerField(primary_key=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,default=None,limit_choices_to=Q(role__in=["player"]))
     matches = models.ManyToManyField(Match,related_name="players",through='MatchPlayerDetails')
     class currentStatus(models.TextChoices):

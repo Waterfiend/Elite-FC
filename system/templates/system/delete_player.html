@@ -4,7 +4,7 @@
     {% endblock %}
 
     {%block content%}
-    <h1>Delete "{{playerstat.user}}" </h1>
+    <h1>Delete "{{player.user}}" </h1>
     <br/>
     <form method= "POST">
         {% csrf_token %}
@@ -12,5 +12,5 @@
         <button class="btn btn-danger">Yes, delete player</button>
     </form>
     <br/>
-    <a href = "{% url 'news' %}" class = "btn btn-dark">No, go back to Players page</a>
+    <a href = "{% url 'playerstat' %}" class = "btn btn-dark">No, go back to Players page</a>
     {% endblock %}

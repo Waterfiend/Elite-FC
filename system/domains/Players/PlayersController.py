@@ -21,7 +21,9 @@ def renderPlayers(request):
     }
     concatination = {'full_name':['first_name',' ','last_name']}
     (searchBar,users) = Search(request,User,concatination)
-    playerUsers = users.filter(role='player') or User.objects.filter(role='player')
+    #playerUsers = users.filter(role='player') or User.objects.filter(role='player')
+    playerUsers = users.exclude(player__isnull=True) or User.objects.exclude(player__isnull=True)
+
     for playerUser in playerUsers:
         playerLinkOptions ={
         'url':'/Matches/'+str(playerUser.id),
@@ -43,7 +45,6 @@ def renderPlayerMatches(request,id):
     playerUser = User.objects.filter(id=id).first()
     (player,created) = Player.objects.get_or_create(user=playerUser)
     player = Player.objects.get(user=playerUser)
-    print(player.id)
     playerMatches = player.matches.all()
     print(playerMatches)
     for match in playerMatches:
