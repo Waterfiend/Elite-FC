@@ -20,6 +20,8 @@ SKIP_PATHS = ['^[/]{1}$',
               "^/buyTicket",
               "^/tierEnrollment",
               "^/tierSelection",
+              "^/myTickets",
+              "^/refundTicket",
               ]
 
 def permissionMiddleware(get_response):

@@ -41,6 +41,7 @@ class AccountSummary(models.Model):
     transaction_name = models.TextField(default="")
     transaction_amount = models.FloatField(default=0.0)
     user = models.ForeignKey(User, on_delete=models.CASCADE,default=None)
+    date = models.TextField(default="")
 class Discounts(models.Model):
     id = models.IntegerField(primary_key=True)
     fan_tier = models.TextField()
@@ -98,7 +99,9 @@ class Ticket(models.Model):
     price = models.IntegerField(default = 0)
     quantity = models.IntegerField(default = 0)
     match = models.ForeignKey(Match, on_delete=models.CASCADE, default = None,null=True)
-    
+class TicketUser(models.Model):  
+    ticket = models.ForeignKey(Ticket,on_delete=models.CASCADE, related_name='ticket')
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='user')
 class Post(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to=Q(role__in=["admin","journalist"]))

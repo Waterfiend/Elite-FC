@@ -83,7 +83,7 @@ def validateLogin(request):
         return redirect('/Profile/')
 def profileLinks(request):
     existingRecord = User.objects.filter(email=request.session['login']['email']).first()
-    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Player Info':'/PlayerStat','Manage Player Matches':'/Players','Manage Salaries/Fees':'/manageFeesSalaries','Manage Permissions':'/managePermissions'}
+    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Player Info':'/PlayerStat','Manage Player Matches':'/Players','Manage Salaries/Fees':'/manageFeesSalaries','Manage Permissions':'/managePermissions','Match Report':'/selectMatch','Financial Report':'/selectDate'}
     generatedSensitiveLinks=[]
     for key,value in sensitivePaths.items():
         AllowedRoles = Permission.objects.filter(path=value).values_list('role',flat=True)
@@ -94,7 +94,7 @@ def profileLinks(request):
         generatedSensitiveLinks.append(link)
         
     accountSummaryLink = Component('link',{'url':'/accountSummary/', 'text':'Account Summary'}).create()
-    reportsLink = Component('link',{'url':'/manageUser/', 'text':'Reports'}).create()
+    reportsLink = Component('link',{'url':'/myTickets/', 'text':'My Tickets'}).create()
     changePasswordLink = Component('link',{'url':'/changePasswordForm/', 'text':'Change Password'}).create()
     
     staffControlsDivisionTitle = Component('container',{'type':'h4', 'content':'Staff Control'}).create()

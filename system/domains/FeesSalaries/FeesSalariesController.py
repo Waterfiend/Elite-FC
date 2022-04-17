@@ -100,11 +100,12 @@ def feesSalariesSubmit(request):
         except:
             users = []
         dt = datetime.datetime.today()
+        today = dt.strftime('%Y-%m-%d')
         for user in users:
             if amount>0:
-                AccountSummary.objects.create(user=user,transaction_name="Fee "+str(dt.year)+'-'+str(dt.month),transaction_amount=amount)
+                AccountSummary.objects.create(user=user,transaction_name="Fee "+str(dt.year)+'-'+str(dt.month),transaction_amount=amount,date=today)
             elif amount<0:
-                AccountSummary.objects.create(user=user,transaction_name="Salary "+str(dt.year)+'-'+str(dt.month),transaction_amount=amount)
+                AccountSummary.objects.create(user=user,transaction_name="Salary "+str(dt.year)+'-'+str(dt.month),transaction_amount=amount,date=today)
     messages.success(request,'Salary/Fee Successfully Submitted')
     return redirect('/manageFeesSalaries/')
 

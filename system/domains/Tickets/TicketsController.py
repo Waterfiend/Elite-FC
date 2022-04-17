@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS
-from ...models import User,Ticket,Match,AccountSummary,Discounts
+from ...models import User,Ticket,Match,AccountSummary,Discounts,TicketUser
 from django.contrib import messages
 import re
-
+from datetime import datetime
 
 def createTicket(request):
     
@@ -177,8 +177,47 @@ def buyTicket(request,id):
         ticket.quantity = ticket.quantity -1
         ticket.save()
         matchTeams = ticket.match.team1 +' VS '+ticket.match.team2
-        AccountSummary.objects.create(user=user,transaction_name="Ticket "+ matchTeams +" "+ticket.ticket_type+" "+ ticket.match.date,transaction_amount=totalCharge)
+        today = datetime.today().strftime('%Y-%m-%d')
+        TicketUser.objects.create(ticket=ticket,user=user)
+        AccountSummary.objects.create(user=user,transaction_name="Ticket "+ matchTeams +" "+ticket.ticket_type+" "+ ticket.match.date,transaction_amount=totalCharge,date=today)
         messages.success(request,'Ticket Purchace Successfully')
     else:
         messages.error(request,'Ticket Sold Out')
     return redirect('/ticketsShop/')
+
+def myTickets(request):
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    today = datetime.today().strftime('%Y-%m-%d')
+    backLinkOptions ={
+            'url':'/Profile/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+            }
+    backLink = Component('link',backLinkOptions).create()
+    tableOptions ={
+                'table_header':["Ticket"],
+                'table_rows':[],     
+            }
+    tickets = TicketUser.objects.filter(user=user,ticket__match__date__lt=today)
+    for ticket in tickets:
+        refundLinkOptions ={
+            'url':'/refundTicket/'+str(ticket.id),
+            'text':'Refund',
+            'class':'btn btn-dark'
+        }
+        refundLink = Component('link',refundLinkOptions).create()
+        matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
+        tableOptions['table_rows'].append([matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date, refundLink])
+
+    form = Component('table',tableOptions).create()
+    return render(request,'system/form.html', {'title':'Available Tickets','form':backLink+form })
+def refundTicket(request,pk):
+    ticket = TicketUser.objects.filter(id=pk).first()
+    matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
+    name = matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date
+    AccountSummary.objects.filter(transaction_name__contains=name).delete()
+    shopTicket = Ticket.objects.filter(match__team1=ticket.ticket.match.team1,match__team2=ticket.ticket.match.team2,match__date=ticket.ticket.match.date,ticket_type=ticket.ticket.ticket_type).first()
+    shopTicket.quantity = shopTicket.quantity + 1
+    shopTicket.save()
+    ticket.delete()
+    return redirect('/myTickets')

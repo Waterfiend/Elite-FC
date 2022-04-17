@@ -62,7 +62,8 @@ def reservationValidate(request):
             user = User.objects.filter(email=request.session['login']['email']).first()
             discount = Discounts.objects.filter(fan_tier=user.fan_tier).first()
             totalCharge = reservationCost*(100-discount.discount)/100
-            AccountSummary.objects.create(user=user,transaction_name="Reservation "+ requestData['date']+ " "+requestData['slot_time'],transaction_amount=totalCharge)
+            today = datetime.today().strftime('%Y-%m-%d')
+            AccountSummary.objects.create(user=user,transaction_name="Reservation "+ requestData['date']+ " "+requestData['slot_time'],transaction_amount=totalCharge,date=today)
             FieldReservation.objects.create(date= requestData['date'], slot_time=requestData['slot_time'],user=user)
             messages.success(request,'Reservation Successful, Price: 15$')
         else:
