@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-
+from ckeditor.fields import RichTextField
 # Create your models here.
 class Role(models.Model):
     id= models.IntegerField(primary_key=True)
@@ -102,7 +102,9 @@ class Ticket(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to=Q(role__in=["admin","journalist"]))
-    body = models.TextField()
+    # body = models.TextField()
+    body = RichTextField(blank=True, null=True)
+    image = models.ImageField(null=True, blank=True, upload_to = "images/")
 
     def __str__(self):
         return self.title + ' | ' + str(self.author)

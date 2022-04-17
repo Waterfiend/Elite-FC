@@ -9,7 +9,12 @@
         {{post.author.last_name}}
     </small><br/>
     <hr>
-    {{post.body}}
+    {{post.body|safe}}<br/>
+    {% if post.image %}
+        <img src="{{post.image.url}}">
+    {%else%}
+    {%endif%}
+    
     
 
     <br/><br>

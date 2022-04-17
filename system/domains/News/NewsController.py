@@ -3,6 +3,10 @@ from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPassw
 from ...models import Post
 from django.urls import reverse_lazy
 
+# def create(request):
+#     if request.method == 'POST':
+#         form = listingForm(request.POST, request.FILES) 
+
 class HomeView(ListView):  # list all article posts on news page
     model = Post
     template_name = 'system/news.html'
@@ -30,7 +34,7 @@ class AddPostView(CreateView):
 class UpdatePostView(UpdateView):
     model = Post
     template_name = 'system/update_post.html'
-    fields = ['title', 'body']
+    fields = ['title', 'body', 'image']
 
 
 class DeletePostView(DeleteView):
