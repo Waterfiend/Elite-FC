@@ -1,0 +1,22 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Elite-FC News 
+    {% endblock %}
+
+    {%block content%}
+    <h1>News</h1>
+        <a href = "/Profile" class = "btn btn-dark btn-sm"> Go Back</a> 
+        
+  
+    <ul>
+    {% for post in object_list %}
+    <p style="line-height:0.8">
+        <li>
+            <a href ="{% url 'article-detailfront' post.pk %}">
+                {{post.title}}</a> - {{post.author.first_name}} {{post.author.last_name}} 
+        </li>
+    {% endfor %}
+    </p>
+    </ul> 
+
+    {% endblock %}

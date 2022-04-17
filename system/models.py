@@ -74,7 +74,7 @@ class Player(models.Model):
         DEFENDER = 'Defender', _('Defender')
         GOALKEEPER = 'Goalkeeper', _('Goalkeeper')
     
-    number = models.CharField(max_length=4,default=0)
+    number = models.IntegerField(choices = [(i,i) for i in range(100)], unique= True, default =0)
     status = models.TextField(choices = currentStatus.choices,default= currentStatus.READY)
     position = models.TextField(choices = currentPosition.choices,default=currentPosition.MIDFIELDER)
     def __str__(self):
