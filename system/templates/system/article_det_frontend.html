@@ -5,6 +5,9 @@
 
     {%block content%}
     <h1>{{post.title}}</h1>
+    <style> table, td {
+        border: 1px solid black;
+    }</style>
     <small>By: {{ post.author.first_name }}
         {{post.author.last_name}}
     </small><br/>
