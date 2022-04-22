@@ -1,0 +1,18 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        {{post.title}}
+    {% endblock %}
+
+    {%block content%}
+    <h1>{{team.name}}</h1>
+    <hr>
+    <img src={{team.image.url}} style='height:300px'>
+    
+
+    <br/><br>
+    <hr>
+    <br/><br>
+    <a href = "{% url 'teams' %}" class = "btn btn-dark"> Back to Teams</a> - <a href = "{% url 'update_team' team.pk %}" class = "btn btn-success">Edit</a>
+    - <a href = "{% url 'delete_team' team.pk %}" class = "btn btn-danger">Delete</a>
+
+    {% endblock %}

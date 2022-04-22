@@ -83,7 +83,7 @@ def validateLogin(request):
         return redirect('/Profile/')
 def profileLinks(request):
     existingRecord = User.objects.filter(email=request.session['login']['email']).first()
-    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Player Info':'/PlayerStat','Manage Player Matches':'/Players','Manage Salaries/Fees':'/manageFeesSalaries','Manage Permissions':'/managePermissions','Match Report':'/selectMatch','Financial Report':'/selectDate'}
+    sensitivePaths = {'Manage Users':'/manageUser','Manage Schedule':'/schedule','Manage Tickets':'/Tickets','Manage Articles':'/News','Manage Player Info':'/PlayerStat','Manage Player Matches':'/Players','Manage Teams':'/Teams','Manage Salaries/Fees':'/manageFeesSalaries','Manage Permissions':'/managePermissions','Match Report':'/selectMatch','Financial Report':'/selectDate'}
     generatedSensitiveLinks=[]
     for key,value in sensitivePaths.items():
         AllowedRoles = Permission.objects.filter(path=value).values_list('role',flat=True)
@@ -95,7 +95,7 @@ def profileLinks(request):
         
     accountSummaryLink = Component('link',{'url':'/accountSummary/', 'text':'Account Summary'}).create()
     reportsLink = Component('link',{'url':'/myTickets/', 'text':'My Tickets'}).create()
-    changePasswordLink = Component('link',{'url':'/changePasswordForm/', 'text':'Change Password'}).create()
+    changePasswordLink = Component('link',{'url':'/changePasswordandEmailForm/', 'text':'Change Credentials'}).create()
     
     staffControlsDivisionTitle = Component('container',{'type':'h4', 'content':'Staff Control'}).create()
     staffControlsDivision = Component('container',{'type':'div', 'class':'linkContainer','content':staffControlsDivisionTitle+"".join(generatedSensitiveLinks)}).create()
@@ -131,11 +131,12 @@ def renderProfile(request):
         return render(request,'system/form.html',{'title':title,'form':profileLinks(request)+form+logoutLink})  
     else:
         return redirect('/')
-def changePasswordForm(request):
-    title = 'Change Password'
+def changePasswordandEmailForm(request):
+    title = 'Change Email and Password'
     
     formOptions = {'form_class':'form','method':'POST','action':'/validatePassword/',
         'form_fields':[
+            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email','value':request.session['login']['email']}},
             {'label':'New Password','input_props':{'name':'password','type':'password'}},
             {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
         ]}
@@ -144,7 +145,7 @@ def changePasswordForm(request):
     formValidationScript = FormValidationErrorsJS(['New Password_input','Confirm Password_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
     
-    confirmPasswordValidationScript = ConfirmPasswordErrorJS('Password_input','Confirm Password_input')
+    confirmPasswordValidationScript = ConfirmPasswordErrorJS('New Password_input','Confirm Password_input')
     confirmPasswordValidationScriptComponenet = Component('script',confirmPasswordValidationScript).create()
     
     return render(request,'system/form.html',{'title':title,'form':form+formValidationScriptComponenet+confirmPasswordValidationScriptComponenet})
@@ -156,13 +157,22 @@ def validatePassword(request):
     infoDict.pop('confirm_password')
     infoDict['password'] = hashlib.md5(infoDict['password'].encode('utf-8')).hexdigest()
     try:
-        existingRecord = User.objects.filter(email=request.session['login']['email']).first()
+            existingEmailRecord = User.objects.filter(email=infoDict['email']).first()
     except:
-        existingRecord = None
-    existingRecord.__dict__.update(infoDict)
-    existingRecord.save()
-    messages.success(request,'Update Successful')
-    return redirect('/Profile')
+        existingEmailRecord = None
+    
+    if(existingEmailRecord is not None and existingEmailRecord.id != id):
+        messages.error(request,'Email '+ infoDict['email'] +' already exists. Please use a different email')
+        return redirect('/Profile')
+    else:
+        try:
+            existingRecord = User.objects.filter(email=request.session['login']['email']).first()
+        except:
+            existingRecord = None
+        existingRecord.__dict__.update(infoDict)
+        existingRecord.save()
+        messages.success(request,'Update Successful')
+        return redirect('/logout')
 def logout(request):
     if 'login' in request.session:
         request.session.pop('login')

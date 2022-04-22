@@ -1,0 +1,46 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Elite-FC Players 
+    {% endblock %}
+
+    {%block content%}
+    <h1>Upcoming Matches</h1>
+        <a href = "/" class = "btn btn-dark btn-sm"> Go Back</a> 
+    <div style="line-height:0.8;display:flex;flex-wrap:wrap">  
+    {% load custom_tags%}  
+    {% for match in object_list %}
+        <div class = 'latest_result_container'>
+            <table class = 'latest_result'>
+                <tr>
+                    <td>
+                        <img style='height:100px' src = "{{match.team1Img}}">
+                        <h3>{{match.team1}}</h3>
+                    </td>
+                    <td>
+                        <h1>VS</h1>
+                    </td>
+                    <td>
+                        <img style='height:100px' src = "{{match.team2Img}}">
+                        <h3>{{match.team2}}</h3>
+                    </td>
+                <tr>
+
+                 <tr>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        <h3 style='display:inline;margin:0 10px;'>{{match.location}}</h3>
+                        <h3 style='display:inline;margin:0 10px;'>{{match.date}}</h3>
+                        <h3 style='display:inline;margin:0 10px;'>{{match.time}}</h3>
+                    </td>
+                    <td>
+                        
+                    </td>
+                <tr>
+            </table>
+        </div>
+    {% endfor %}
+    </div>
+
+    {% endblock %}

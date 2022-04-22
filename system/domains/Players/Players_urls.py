@@ -16,4 +16,7 @@ urlpatterns = [
     path('player/edit/<int:pk>', views.UpdatePlayerView.as_view(), name = 'update_player'),
     path('player/<int:pk>/delete', views.DeletePlayerView.as_view(), name = 'delete_player'),
    
+   
+    path('viewPlayers/', views.FrontHomeView.as_view(), name = "playerview"),
+    path('playerstatisticsFront/<int:pk>', views.playerstatisticsFront.as_view(), name = "player-detailfront"),
 ]

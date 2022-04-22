@@ -1,0 +1,12 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Edit Team
+    {% endblock %}
+
+    {%block content%}
+    <h1>Update Team</h1>
+    <form method= "POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-dark">Update</button>
+    {% endblock %}

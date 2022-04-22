@@ -1,18 +1,18 @@
 from calendar import calendar
 import hashlib
-
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier,Salary
+from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier,Salary,Team
 from django.contrib import messages
 import hashlib
 from datetime import datetime
 import re
 from .helpers.Calendar import Calendar
 from django.db.models import Max
+
 # Create your views here.
 def carousel():
     return Component('container',{'type':'div',
@@ -29,13 +29,23 @@ def hello(request):
     
     latest_result = Match.objects.filter(date__lt=today).order_by('-date').first()
     if latest_result:
-        team1_header = Component('container',{"type":'h4','content':latest_result.team1}).create()
-        team2_header = Component('container',{"type":'h4','content':latest_result.team2}).create()
-        VS_header = Component('container',{"type":'h2','content':'VS'}).create()
-        score1_header = Component('container',{"type":'h5','content':str(latest_result.score1)}).create()
-        score2_header = Component('container',{"type":'h5','content':str(latest_result.score2)}).create()
+        team1_header = Component('container',{"type":'h3','content':latest_result.team1}).create()
+        team2_header = Component('container',{"type":'h3','content':latest_result.team2}).create()
+        try:
+            team1_img_url = Team.objects.filter(name=latest_result.team1).first().image.url
+        except:
+            team1_img_url=''
+        try:
+            team2_img_url = Team.objects.filter(name=latest_result.team2).first().image.url
+        except:
+            team2_img_url=''
+        team1_img = '<img src='+team1_img_url+' style=height:100px>'
+        team2_img = '<img src='+team2_img_url+' style=height:100px>'
+        VS_header = Component('container',{"type":'h1','content':'VS'}).create()
+        score1_header = Component('container',{"type":'h3','content':str(latest_result.score1)}).create()
+        score2_header = Component('container',{"type":'h3','content':str(latest_result.score2)}).create()
         latest_result_html = Component('table',{"table_class":'latest_result',
-                                    'table_rows':[[team1_header,VS_header,team2_header],
+                                    'table_rows':[[team1_header+team1_img,VS_header,team2_header+team2_img],
                                                   [score1_header,"",score2_header],
                                                   ['',latest_result.location+' '+latest_result.date+' '+latest_result.time,''],
                                                    ]        

@@ -1,0 +1,23 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        Elite-FC Teams 
+    {% endblock %}
+
+    {%block content%}
+    <h1>Teams</h1>
+        <a href = "/Profile" class = "btn btn-dark btn-sm"> Go Back</a> 
+        <a href = "{% url 'add_team' %}" class = "btn btn-success btn-sm"> Add Team</a> 
+  
+    <ul>
+    {% for team in object_list %}
+    <p style="line-height:0.8">
+        <li>
+            <a href ="{% url 'team-detail' team.pk %}">
+                {{team.name}} </a><small><a href = "{% url 'update_team' team.pk %}" class = "btn btn-success btn-sm">Edit</a>
+            </small> - <small><a href = "{% url 'delete_team' team.pk %}" class = "btn btn-danger btn-sm">Delete</a></small>
+        </li>
+    {% endfor %}
+    </p>
+    </ul> 
+
+    {% endblock %}

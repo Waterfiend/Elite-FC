@@ -9,6 +9,9 @@
         {{post.author.last_name}}
     </small><br/>
     <hr>
+    {% if  post.image%}
+        <img src={{post.image.url}} style='height:300px'><br>
+    {%endif%}
     {{post.body}}
     
 

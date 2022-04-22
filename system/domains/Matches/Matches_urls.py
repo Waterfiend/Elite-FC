@@ -7,4 +7,8 @@ urlpatterns = [
     path('deletematch/<int:match_id>', views.delete_match),
     path('editmatch/<int:match_id>', views.display_matchform),
     path('postmatch/<int:match_id>', views.post_match),
+    
+    
+    path('upcommingMatches/', views.upcommingMatches.as_view()),
+    path('matcheResults/', views.matcheResults.as_view()),
 ]

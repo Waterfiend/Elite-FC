@@ -51,8 +51,8 @@ def createPermission(request):
     backLink = Component('link',backLinkOptions).create()
     formOptions = {'form_class':'form','method':'POST','action':'/permissionValidate/',
         'form_fields':[
-            {'label':'Role','input_props':{'name':'role','type':'text', 'pattern':"[A-Za-z1-9/]+", 'title':'Only letters and numbers allowed'}},
-            {'label':'Path','input_props':{'name':'path','type':'text', 'pattern':"[A-Za-z1-9/]+", 'title':'Only letters and numbers allowed'}},
+            {'label':'Role','input_props':{'name':'role','type':'text', 'pattern':"[A-Za-z1-9/_]+", 'title':'Only letters and numbers allowed'}},
+            {'label':'Path','input_props':{'name':'path','type':'text', 'pattern':"[A-Za-z1-9/_]+", 'title':'Only letters and numbers allowed'}},
         ]}
     form = Component('form',formOptions).create(request)
 

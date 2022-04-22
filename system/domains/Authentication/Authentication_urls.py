@@ -9,6 +9,6 @@ urlpatterns = [
     path('loginValidate/', views.validateLogin),
     path('Profile/', views.renderProfile),
     path('logout/',views.logout),
-    path('changePasswordForm/',views.changePasswordForm),
+    path('changePasswordandEmailForm/',views.changePasswordandEmailForm),
     path('validatePassword/',views.validatePassword),
 ]

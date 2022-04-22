@@ -7,6 +7,13 @@ SKIP_PATHS = ['^[/]{1}$',
               "^/login",
               "^/registerValidate",
               "^/loginValidate",
+              "^/Newsfront",
+              "^/articledet",   
+              "^/media",
+              "^/viewPlayers",
+              "^/playerstatisticsFront",
+              "^/upcommingMatches",
+              "^/matcheResults",
               ]
 
 def authenticationMiddleware(get_response):

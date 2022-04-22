@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from system.helpers.Component import Component
-from system.helpers.FormValidationJS import FormValidationErrorsJS
+from system.helpers.FormValidationJS import FormValidationErrorsJS,FormValidateSumJS
 from ...models import User,Match,Player,MatchPlayerDetails
 from django.contrib import messages
 from helpers.SearchBar import Search
@@ -99,25 +99,43 @@ def playerStatisticsForm(request,id=0,match_id=0):
         match_ids.append("<!--"+str(match.id)+"-->"+match.date+" "+match.time+" "+match.team1+"VS"+match.team2)    
     formOptions = {'form_class':'form','method':'POST','action':'/editStatisticsValidate/'+str(id)+'/'+str(match_id),
         'form_fields':[
-            {'label':'Attempted Shots','input_props':{'name':'attempted_shots','type':'number', 'title':'Only numbers allowed', 'value':str(values['attempted_shots'])}},
-            {'label':'Goals','input_props':{'name':'goals','type':'number', 'title':'Only numbers allowed','value':str(values['goals'])}},
-            {'label':'Attempted Passes','input_props':{'name':'attempted_passes','type':'number', 'title':'Only numbers allowed','value':str(values['attempted_passes'])}},
-            {'label':'Made Passes','input_props':{'name':'made_passes','type':'number','title':'Only numbers allowed','value':str(values['made_passes'])}},
-            {'label':'Fouls','input_props':{'name':'fouls','type':'number','title':'Only numbers allowed','value':str(values['fouls'])}},
-            {'label':'Minutes Played','input_props':{'name':'minutes_played','type':'number','value':str(values['minutes_played'])}},
+            {'label':'Attempted Shots','input_props':{'name':'attempted_shots','type':'number', 'title':'Only numbers allowed', 'min':'0','value':str(values['attempted_shots'])}},
+            {'label':'Shots On Target','input_props':{'name':'shots_on_target','type':'number', 'title':'Only numbers allowed', 'min':'0','value':str(values['shots_on_target'])}},
+            {'label':'Goals','input_props':{'name':'goals','type':'number', 'title':'Only numbers allowed','min':'0','value':str(values['goals'])}},
+            {'label':'Attempted Passes','input_props':{'name':'attempted_passes','type':'number', 'title':'Only numbers allowed','min':'0','value':str(values['attempted_passes'])}},
+            {'label':'Successful Passes','input_props':{'name':'made_passes','type':'number','title':'Only numbers allowed','min':'0','value':str(values['made_passes'])}},
+            {'label':'Attempted Tackles','input_props':{'name':'attempted_tackles','type':'number', 'title':'Only numbers allowed','min':'0','value':str(values['made_tackles'])}},
+            {'label':'Successful Tackles','input_props':{'name':'made_tackles','type':'number','title':'Only numbers allowed','min':'0','value':str(values['made_tackles'])}},
+            {'label':'Fouls','input_props':{'name':'fouls','type':'number','title':'Only numbers allowed','min':'0','value':str(values['fouls'])}},
+            {'label':'Minutes Played','input_props':{'name':'minutes_played','type':'number','min':'0','value':str(values['minutes_played'])}},
             {'label':'Match','field_type':'select','input_props':{'name':'match','type':'text','size':'4','selected':playerMatch_id},'select_options': match_ids},
         ]}
     form = Component('form',formOptions).create(request)
 
-    formValidationScript = FormValidationErrorsJS(['Attempted Shots_input','Goals_input','Attempted Passes_input','Made Passes_input','Fouls_input', 'Minutes Played_input'])
+    formValidationScript = FormValidationErrorsJS(['Attempted Shots_input','Goals_input','Shots On Target_input','Attempted Passes_input','Successful Passes_input','Attempted Tackles_input','Successful Tackles_input','Fouls_input', 'Minutes Played_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
+    
+    shotsSumValidation = FormValidateSumJS('Attempted Shots_input',['Shots On Target_input'])
+    shotsSumValidationScriptComponenet = Component('script',shotsSumValidation).create()
+    
+    goalsSumValidation = FormValidateSumJS('Shots On Target_input',['Goals_input'])
+    goalsSumValidationScriptComponenet = Component('script',goalsSumValidation).create()
+    
+    passesSumValidation = FormValidateSumJS('Attempted Passes_input',['Successful Passes_input'])
+    passesSumValidationScriptComponenet = Component('script',passesSumValidation).create()
+    
+    passesSumValidation = FormValidateSumJS('Attempted Tackles_input',['Successful Tackles_input'])
+    passesSumValidationScriptComponenet = Component('script',passesSumValidation).create()
+    
+    jsScripts = formValidationScriptComponenet+shotsSumValidationScriptComponenet+goalsSumValidationScriptComponenet+passesSumValidationScriptComponenet
+    
     backLinkOptions ={
             'url':'/Matches/'+str(id),
             'text':'Go Back',
             'class':'btn btn-dark me-1'
             }
     backLink = Component('link',backLinkOptions).create()
-    return render(request,'system/form.html',{'title':title,'form':backLink+form+formValidationScriptComponenet})
+    return render(request,'system/form.html',{'title':title,'form':backLink+form+jsScripts})
 
 def editStatisticsValidate(request,id,match_id):
     if(request.method == 'POST'):
@@ -162,21 +180,29 @@ def deleteStatistics(request,id,match_id):
 class HomeView(ListView):
     model = Player
     template_name = 'system/playerstat.html'
-    
+
+class FrontHomeView(ListView):
+    model = Player
+    template_name = 'system/playerstat_front.html'
+
+
 class PlayerDetailView(DetailView): 
     model = Player
     template_name = 'system/player_details.html'
-
-
+    
+class playerstatisticsFront(DetailView):
+    model = Player
+    template_name = 'system/player_details_front.html'
+    
 class AddPlayerView(CreateView):
     model = Player
     template_name = 'system/add_player.html'
-    fields = ['user','number','status','position']
+    fields = ['user','number','status','position','image']
 
 class UpdatePlayerView(UpdateView):
     model = Player
     template_name = 'system/update_player.html'
-    fields = ['number','status','position']
+    fields = ['number','status','position','image']
 
 class DeletePlayerView(DeleteView):
     model = Player

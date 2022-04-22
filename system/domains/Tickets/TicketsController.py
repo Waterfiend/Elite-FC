@@ -178,8 +178,12 @@ def buyTicket(request,id):
         ticket.save()
         matchTeams = ticket.match.team1 +' VS '+ticket.match.team2
         today = datetime.today().strftime('%Y-%m-%d')
-        TicketUser.objects.create(ticket=ticket,user=user)
-        AccountSummary.objects.create(user=user,transaction_name="Ticket "+ matchTeams +" "+ticket.ticket_type+" "+ ticket.match.date,transaction_amount=totalCharge,date=today)
+        
+        account_summary=AccountSummary.objects.create(user=user,transaction_name="Ticket "+ matchTeams +" "+ticket.ticket_type+" "+ ticket.match.date,transaction_amount=totalCharge,date=today)
+        account_summary.save()
+        print(account_summary.id)
+        TicketUser.objects.create(ticket=ticket,user=user,account_summary=account_summary)
+        
         messages.success(request,'Ticket Purchace Successfully')
     else:
         messages.error(request,'Ticket Sold Out')
@@ -212,12 +216,13 @@ def myTickets(request):
     form = Component('table',tableOptions).create()
     return render(request,'system/form.html', {'title':'Available Tickets','form':backLink+form })
 def refundTicket(request,pk):
-    ticket = TicketUser.objects.filter(id=pk).first()
-    matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
-    name = matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date
-    AccountSummary.objects.filter(transaction_name__contains=name).delete()
-    shopTicket = Ticket.objects.filter(match__team1=ticket.ticket.match.team1,match__team2=ticket.ticket.match.team2,match__date=ticket.ticket.match.date,ticket_type=ticket.ticket.ticket_type).first()
+    ticket_user = TicketUser.objects.filter(id=pk).first()
+    # matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
+    # name = matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date
+    # AccountSummary.objects.filter(transaction_name__contains=name).delete()
+    # shopTicket = Ticket.objects.filter(match__team1=ticket.ticket.match.team1,match__team2=ticket.ticket.match.team2,match__date=ticket.ticket.match.date,ticket_type=ticket.ticket.ticket_type).first()
+    shopTicket = ticket_user.ticket
     shopTicket.quantity = shopTicket.quantity + 1
     shopTicket.save()
-    ticket.delete()
+    ticket_user.account_summary.delete()
     return redirect('/myTickets')

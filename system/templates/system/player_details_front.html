@@ -1,0 +1,35 @@
+{% extends 'system/base.html' %}
+    {% block title %} 
+        {{player.user}}
+    {% endblock %}
+
+    {%block content%}
+    <h1>{{player.user}}</h1>
+    
+    <hr>
+    <div style='display:flex;flex-wrap:wrap'>
+        <div style='margin-right:10px'>
+            <img src={{player.image.url}} style='height:300px'>
+            <p style="font-size:20px">Position: {{player.position}}</p>
+            <p style="font-size:20px">Number: {{player.number}}</p>
+            <p style="font-size:20px">Status: {{player.status}}</p>
+            <p style="font-size:20px">Total Play Time: {{player.totalPitchTime}}</p>
+            <p style="font-size:20px">Career Goals: {{player.totalGoals}}</p>
+        </div>
+        <div style='flex-grow:1'>
+            <p style="font-size:20px">Shots on Target:</p>
+            <progress style = 'width:90%' value =  {{player.shotRatio}} max='1'></progress> {% widthratio player.shotRatio 1 100 %}%
+            <p style="font-size:20px">Converted Shots:</p>
+            <progress style = 'width:90%' value =  {{player.shotConversionRate}} max='1'></progress> {% widthratio player.shotConversionRate 1 100 %}%
+            <p style="font-size:20px">Successful Passes:</p>
+            <progress style = 'width:90%'  value =  {{player.passRatio}} max='1'></progress> {% widthratio player.passRatio 1 100 %}%
+            <p style="font-size:20px">Successful Tackles:</p>
+            <progress style = 'width:90%' value =  {{player.tackleRatio}} max='1'></progress> {% widthratio player.tackleRatio 1 100 %}%
+        </div>
+    </div>
+    <br/><br>
+    <hr>
+    <br/><br>
+    <a href = "{% url 'playerview' %}" class = "btn btn-dark"> Back to Player Stats</a>     
+
+    {% endblock %}

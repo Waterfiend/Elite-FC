@@ -97,11 +97,11 @@ top:0;
 .latest_result_container{
     width:100%;
     background-color:whitesmoke;
-    margin: 0 10px;
+    margin: 10px 0;
 }
 .latest_result_with_title{
     min-width: 100%;
-    margin: 0 10px;
+    margin: 10px 0;
 }
 .latest_result{
     border: 1px solid black;

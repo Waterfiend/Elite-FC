@@ -93,3 +93,89 @@ def ConfirmPasswordErrorJS(passwordId,ConfirmPasswordId):
         '''
     }
 
+def FormValidateSumJS(total_id, other_ids):
+    return {
+    'script':'''
+    (()=>{
+        document.addEventListener('invalid', (function(){
+            return function(e) {
+            //prevent the browser from showing default error bubble / hint
+            e.preventDefault();
+            // optionally fire off some custom validation handler
+            // myValidation();
+            };
+        })(), true);
+        
+        let other_ids =''' + str(other_ids) + 
+        '''
+        let total_id ='''+ '"'+total_id+'"'+
+        
+        '''
+        let elements = []
+        other_ids.forEach(function(id){
+            elements.push(document.getElementById(id))
+        })
+        let total_element = document.getElementById(total_id)
+        let submit = document.getElementById('submit')
+        function DisplayErrors(element)
+        {
+                let oldErr = document.getElementById(total_element.id+'_err')
+                if (oldErr)
+                {
+                    element.parentNode.removeChild(oldErr)
+                }
+                let requiredSum = parseInt(total_element.value)
+                let currentSum = 0
+                for (let i = 0; i< elements.length;i++)
+                {
+                    currentSum = currentSum + parseInt(elements[i].value)
+                }
+                console.log(currentSum)
+                console.log(requiredSum)
+                if(requiredSum<currentSum)
+                {
+                    let err = document.createElement("p")
+                    err.id = total_element.id+'_err'
+                    err.style.color = 'red'
+                    console.log(element.value)
+                    let values = ''
+                    elements.forEach(function(element){
+                        values = values + element.id.replace('_input','') + ','          
+                    })
+                    err.innerHTML = values + ' not adding up to '+total_element.id.replace('_input','')                      
+                    total_element.parentNode.insertBefore(err,total_element.nextSibling)
+                    submit.disabled = true;  
+                }
+                else
+                {
+                    submit.disabled = false; 
+                    let err = document.getElementById(total_element.id+'_err')
+                    if(err)
+                    {
+                        total_element.parentNode.removeChild(err)
+                    }
+                }
+        }
+        
+        elements.forEach(function(element){
+            element.onchange = function(){
+                DisplayErrors(element)
+            }
+            
+            
+        })
+        
+        total_element.onchange = function(){
+                elements.forEach(function(element){
+                DisplayErrors(element)          
+                })
+        }
+         document.getElementById('submit').onclick = function(){
+            console.log('submit')
+            elements.forEach(function(element){
+                DisplayErrors(element)
+            })     
+        }
+        })()
+    '''
+    }

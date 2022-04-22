@@ -1,9 +1,12 @@
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS
-from ...models import Match
+from ...models import Match,Team
 from helpers.SearchBar import Search
+from datetime import datetime
+
 """
 Displays the schedule of the playing teams.
 """
@@ -72,6 +75,9 @@ def display_matchform(request, match_id=0):
             'class':'btn btn-dark me-1'
     }
     backLink = Component('link',backLinkOptions).create()
+    teams = []
+    for team in Team.objects.all():
+        teams.append(team.name)
     if match_id != 0:
         existing_match = Match.objects.filter(id=match_id).first()
         title = 'Edit ' + existing_match.team1 + ' VS. ' + existing_match.team2
@@ -81,12 +87,8 @@ def display_matchform(request, match_id=0):
         values = {field.name: '' for field in Match._meta.fields}
     formOptions = {'form_class': 'form', 'method': 'POST', 'action': '/postmatch/' + str(match_id),
                        'form_fields': [
-                           {'label': 'Team 1',
-                            'input_props': {'name': 'team1', 'type': 'text', 'pattern': "[A-Za-z\s]+",
-                                            'title': 'Only letters allowed', 'value': values['team1']}},
-                           {'label': 'Team 2',
-                            'input_props': {'name': 'team2', 'type': 'text', 'pattern': "[A-Za-z\s]+",
-                                            'title': 'Only letters allowed', 'value': values['team2']}},
+                           {'label':'Team 1','field_type':'select','input_props':{'name':'team1','type':'text','selected':values['team1'],'size':'4'},'select_options':teams},
+                           {'label':'Team 2','field_type':'select','input_props':{'name':'team2','type':'text','selected':values['team2'],'size':'4'},'select_options':teams},
                            {'label': 'Date',
                             'input_props': {'name': 'date', 'type': 'date', 'value': values['date']}},
                            {'label': 'Time', 'input_props': {'name': 'time', 'type': 'time','value': values['time']}},
@@ -117,11 +119,34 @@ def post_match(request, match_id):
             existingRecord = Match.objects.filter(id=match_id).first()
         except:
             existingRecord = None
-        if match_id != 0:
-            existingRecord.__dict__.update(infoDict)
-            existingRecord.save()
-            messages.success(request, 'Update Successful')
+        if infoDict['team1'] != infoDict['team2']:
+            if match_id != 0:
+                existingRecord.__dict__.update(infoDict)
+                existingRecord.save()
+                messages.success(request, 'Update Successful')
+            else:
+                Match.objects.create(**infoDict)
+                messages.success(request, 'Add Successful')
         else:
-            Match.objects.create(**infoDict)
-            messages.success(request, 'Add Successful')
+            messages.error(request, 'Team 1 and Team 2 should be different')
         return redirect('/schedule')
+    
+    
+class upcommingMatches(ListView):  # puts one news article on page
+    model = Match
+    template_name = 'system/upcommingMatches.html'
+    
+    def get_queryset(self):
+        today = datetime.today().strftime('%Y-%m-%d')
+        upcommingMatches = Match.objects.filter(date__gte=today)
+        return upcommingMatches
+    
+class matcheResults(ListView):  # puts one news article on page
+    model = Match
+    template_name = 'system/matchResults.html'
+    
+    def get_queryset(self):
+        today = datetime.today().strftime('%Y-%m-%d')
+        matcheResults = Match.objects.filter(date__lt=today)
+        return matcheResults
+    
