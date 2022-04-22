@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Sum
 from operator import mod
 
+from ckeditor.fields import RichTextField
 # Create your models here.
 class Role(models.Model):
     id= models.IntegerField(primary_key=True)
@@ -165,8 +166,10 @@ class TicketUser(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to=Q(role__in=["admin","journalist"]))
-    body = models.TextField()
     image = models.ImageField(upload_to='article_images/', verbose_name=_("Image"), null=True, blank=True,default=None)
+    # body = models.TextField()
+    body = RichTextField(blank=True, null=True)
+
     def __str__(self):
         return self.title + ' | ' + str(self.author)
     

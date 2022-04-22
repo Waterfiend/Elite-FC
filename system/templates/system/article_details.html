@@ -5,6 +5,9 @@
 
     {%block content%}
     <h1>{{post.title}}</h1>
+    <style> table, td {
+        border: 1px solid black;
+    }</style>
     <small>By: {{ post.author.first_name }}
         {{post.author.last_name}}
     </small><br/>
@@ -12,7 +15,7 @@
     {% if  post.image%}
         <img src={{post.image.url}} style='height:300px'><br>
     {%endif%}
-    {{post.body}}
+    {{post.body|safe}}
     
 
     <br/><br>
