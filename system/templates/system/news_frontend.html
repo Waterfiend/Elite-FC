@@ -10,16 +10,13 @@
     {% load custom_tags%}  
     {% for post in object_list %}
     {% with link=''%}
-        {% if post.image%}
-            
-        {%endif%}
         <div style='position:relative;width:300px;background:aliceblue;height:300px;padding-bottom:10px;margin:10px;border:1px solid grey'>
             <div style='width:300px;height:150px;background-image: url({{link|returnImageURLOrEmpty:post.image}});background-size: cover;'>
             </div>
                 <a style= 'position:absolute; height:100%; width:100%;top:0;left:0'href ="{% url 'article-detailfront' post.pk %}"></a>
                 <div style='line-height:20px'>
                     <h5>{{post.title}}</h5>
-                    By: {{post.author.first_name}} {{post.author.last_name}} 
+                    By: {{post.author}} 
                 </div>
         </div>
     {%endwith%}

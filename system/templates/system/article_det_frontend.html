@@ -4,22 +4,26 @@
     {% endblock %}
 
     {%block content%}
-    <h1>{{post.title}}</h1>
-    <style> table, td {
-        border: 1px solid black;
-    }</style>
-    <small>By: {{ post.author.first_name }}
-        {{post.author.last_name}}
-    </small><br/>
-    <hr>
-    {% if  post.image%}
-    <img src={{post.image.url}} style='height:300px'><br>
-    {%endif%}
-    {{post.body|safe}}
-    
-
-    <br/><br>
-    <hr>
+    <div style = 'width:75%;margin:auto'> 
+        <div style = 'font-family: GH Guardian Headline,Guardian Egyptian Web,Georgia,serif;font-size: 2.125rem;line-height: 1.15;font-weight: 700;'>{{post.title}}</div>
+        <style> table, td {
+            border: 1px solid black;
+        }</style>
+        <small>By: {{ post.author.first_name }}
+            {{post.author.last_name}}
+        </small><br/>
+        <hr>
+        {% if  post.image%}
+        
+        <div src={{post.image.url}} style='height:500px;width:100%;background-image: url({{post.image.url}});background-size: contain;background-repeat: no-repeat; background-position: center;'></div>
+        {%endif%}
+        <div style = 'font-family: GuardianTextEgyptian,Guardian Text Egyptian Web,Georgia,serif;font-size: 1.0625rem; line-height: 1.5;font-weight: 400;'>
+        {{post.body|safe}}
+        <div>
+        <br/><br>
+        <hr>
+    </div>
+   
     <br/><br>
     <a href = "{% url 'newsfront' %}" class = "btn btn-dark"> Back to News</a> 
     {% endblock %}

@@ -11,11 +11,13 @@ class HomeView(ListView):  # list all article posts on news page
     model = Post
     template_name = 'system/news.html'
     ordering = ['-id']  # this puts oldest articles at the bottom
+    ['title', 'author']
 
 class HomeViewFront(ListView):
     model = Post
     template_name  = 'system/news_frontend.html'
     ordering = ['-id']
+    fields = []
 
 class ArticleDetailView(DetailView):  # puts one news article on page
     model = Post
