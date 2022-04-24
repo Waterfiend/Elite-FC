@@ -18,10 +18,16 @@ class Calendar(HTMLCalendar):
             d += f'<li> {self.eventsFunction(event)} </li>'
 
         if day != 0:
-            if date==today:
-                return f"<td style='position:relative;background-color:MediumTurquoise'><div class='date'>{str(day)+' Today'}</div> {d} </td>"
+            if events_per_day:
+                background = 'background-color:red'
+                opacity = 'opacity:1;'
             else:
-                return f"<td style='position:relative;'><div class='date'>{day}</div> {d} </td>"
+                background = ''
+                opacity = 'opacity:0;'
+            if date==today:
+                return f"<td style='position:relative;background-color:MediumTurquoise'><div class='date'>{str(day)+' Today'}</div> <div style = 'width:100%;height:100%;{opacity}' class='tooltip'><span class='tooltiptext'>{d}</span></div> </td>"
+            else:
+                return f"<td style='position:relative;{background}'><div class='date'>{day}</div> <div style = 'width:100%;height:100%;{opacity}' class='tooltip'><span class='tooltiptext'>{d}</span></div> </td>"
         else:
              return f"<td style='position:relative;'><div class='date'></div></td>"
         return '<td></td>'

@@ -20,7 +20,7 @@ class AddTeamView(CreateView):
 
 class UpdateTeamView(UpdateView):
     model = Team
-    template_name = 'system/team/update_team.html'
+    template_name = 'system/teams/update_team.html'
     fields = '__all__'
 
 

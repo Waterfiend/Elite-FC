@@ -5,6 +5,7 @@
 
     {%block content%}
     <h1>Add Player</h1>
+    <hr>
     <a href = "{% url 'playerstat' %}" class = "btn btn-dark btn-sm mb-2"> Go Back</a> 
     <form method= "POST" enctype="multipart/form-data">
         {% csrf_token %}

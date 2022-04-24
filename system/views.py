@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from system.helpers.Component import Component
 from system.helpers.FormValidationJS import FormValidationErrorsJS, ConfirmPasswordErrorJS
-from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier,Salary,Team
+from .models import Permission, User,FieldReservation,AccountSummary,Discounts,Ticket,Match,Role,Tier,Salary,Team,Post
 from django.contrib import messages
 import hashlib
 from datetime import datetime
@@ -53,19 +53,23 @@ def hello(request):
     else:
         latest_result_html = ''
     
+    horizontal_line = Component('container',{"type":'hr'}).create()
+    
     html_cal = cal.formatmonth(withyear=True)
-    cal_container_title = Component('container',{"type":'h4',"class":'','content':"Upcomming Matches"}).create()
+    cal_container_title = Component('container',{"type":'h4',"class":'','content':"This Month's Matches"}).create()
     cal_container = Component('container',{"type":'div',"class":'home_cal','content':html_cal}).create()
     
-    calendar = Component('container',{"type":'div',"class":'home_calendar_with_title','content':cal_container_title+cal_container}).create()
+    calendar = Component('container',{"type":'div',"class":'home_calendar_with_title','content':cal_container_title+horizontal_line+cal_container}).create()
     
     result_container_title = Component('container',{"type":'h4',"class":'','content':"Latest Result"}).create()
     result_container = Component('container',{"type":'div',"class":'latest_result_container','content':latest_result_html}).create()
     
-    result = Component('container',{"type":'div',"class":'latest_result_with_title','content':result_container_title+result_container}).create()
+    result = Component('container',{"type":'div',"class":'latest_result_with_title','content':result_container_title+horizontal_line+result_container}).create()
     
     home_container = Component('container',{"type":'div',"class":'home_container','content':result+calendar}).create()
-    return render(request, 'system/home.html', {'title': '', 'form':home_container})
+    
+    last_five_news_articles = Post.objects.order_by('-id')[:10][::-1]
+    return render(request, 'system/home.html', {'title': '', 'form':home_container,'articles':last_five_news_articles})
 
 
 

@@ -63,9 +63,46 @@ def reservationValidate(request):
             discount = Discounts.objects.filter(fan_tier=user.fan_tier).first()
             totalCharge = reservationCost*(100-discount.discount)/100
             today = datetime.today().strftime('%Y-%m-%d')
-            AccountSummary.objects.create(user=user,transaction_name="Reservation "+ requestData['date']+ " "+requestData['slot_time'],transaction_amount=totalCharge,date=today)
-            FieldReservation.objects.create(date= requestData['date'], slot_time=requestData['slot_time'],user=user)
-            messages.success(request,'Reservation Successful, Price: 15$')
+            accountSummaryRecord = AccountSummary.objects.create(user=user,transaction_name="Reservation "+ requestData['date']+ " "+requestData['slot_time'],transaction_amount=totalCharge,date=today)
+            FieldReservation.objects.create(date= requestData['date'], slot_time=requestData['slot_time'],user=user,account_summary=accountSummaryRecord)
+            messages.success(request,'Reservation Successful')
         else:
             messages.error(request,'Time slot reserved')
     return redirect('/fieldReservation')
+
+def myReservations(request):
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    today = datetime.today().strftime('%Y-%m-%d')
+    backLinkOptions ={
+            'url':'/Profile/',
+            'text':'Go Back',
+            'class':'btn btn-dark me-1'
+            }
+    backLink = Component('link',backLinkOptions).create()
+    tableOptions ={
+                'table_header':["Reservation"],
+                'table_rows':[],     
+            }
+    reservations = FieldReservation.objects.filter(user=user)
+    for reservation in reservations:
+        if (reservation.date>today):
+            refundLinkOptions ={
+                'url':'/refundReservation/'+str(reservation.id),
+                'text':'Refund',
+                'class':'btn btn-dark'
+            }
+            refundLink = Component('link',refundLinkOptions).create()
+        else:
+            refundLink = ''
+        
+        tableOptions['table_rows'].append([reservation.date+ ' '+reservation.slot_time, refundLink])
+
+    form = Component('table',tableOptions).create()
+    return render(request,'system/form.html', {'title':'My Reservations','form':backLink+form })
+def refundReservation(request,pk):
+    reservation = FieldReservation.objects.filter(id=pk).first()
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    today = datetime.today().strftime('%Y-%m-%d')
+    if (reservation.user==user and reservation.date>today):
+        reservation.account_summary.delete()
+    return redirect('/myReservations')

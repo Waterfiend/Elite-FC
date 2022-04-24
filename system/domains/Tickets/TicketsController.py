@@ -152,7 +152,8 @@ def ticketsShop(request):
                 'table_header':['Match Teams', 'Match Date', "Ticket Type", "Quantity Available", "Price"],
                 'table_rows':[],     
             }
-    tickets = Ticket.objects.all()
+    today = datetime.today().strftime('%Y-%m-%d')
+    tickets = Ticket.objects.filter(match__date__gte=today)
     user = User.objects.filter(email=request.session['login']['email']).first()
     discount = Discounts.objects.filter(fan_tier=user.fan_tier).first()
     for ticket in tickets:
@@ -202,27 +203,29 @@ def myTickets(request):
                 'table_header':["Ticket"],
                 'table_rows':[],     
             }
-    tickets = TicketUser.objects.filter(user=user,ticket__match__date__lt=today)
+    tickets = TicketUser.objects.filter(user=user)
     for ticket in tickets:
-        refundLinkOptions ={
-            'url':'/refundTicket/'+str(ticket.id),
-            'text':'Refund',
-            'class':'btn btn-dark'
-        }
-        refundLink = Component('link',refundLinkOptions).create()
+        if (ticket.ticket.match.date>today):
+            refundLinkOptions ={
+                'url':'/refundTicket/'+str(ticket.id),
+                'text':'Refund',
+                'class':'btn btn-dark'
+            }
+            refundLink = Component('link',refundLinkOptions).create()
+        else:
+            refundLink = ''
         matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
         tableOptions['table_rows'].append([matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date, refundLink])
 
     form = Component('table',tableOptions).create()
-    return render(request,'system/form.html', {'title':'Available Tickets','form':backLink+form })
+    return render(request,'system/form.html', {'title':'My Tickets','form':backLink+form })
 def refundTicket(request,pk):
     ticket_user = TicketUser.objects.filter(id=pk).first()
-    # matchTeams = ticket.ticket.match.team1 +' VS '+ticket.ticket.match.team2
-    # name = matchTeams+ ' '+ticket.ticket.ticket_type+' '+ticket.ticket.match.date
-    # AccountSummary.objects.filter(transaction_name__contains=name).delete()
-    # shopTicket = Ticket.objects.filter(match__team1=ticket.ticket.match.team1,match__team2=ticket.ticket.match.team2,match__date=ticket.ticket.match.date,ticket_type=ticket.ticket.ticket_type).first()
     shopTicket = ticket_user.ticket
-    shopTicket.quantity = shopTicket.quantity + 1
-    shopTicket.save()
-    ticket_user.account_summary.delete()
+    user = User.objects.filter(email=request.session['login']['email']).first()
+    today = datetime.today().strftime('%Y-%m-%d')
+    if (ticket_user.user==user and shopTicket.match.date>today):
+        shopTicket.quantity = shopTicket.quantity + 1
+        shopTicket.save()
+        ticket_user.account_summary.delete()
     return redirect('/myTickets')

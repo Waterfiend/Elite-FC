@@ -5,6 +5,7 @@
 
     {%block content%}
     <h1>Update Article</h1>
+    <hr>
     <form method= "POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.media }}

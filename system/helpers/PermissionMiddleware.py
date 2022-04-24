@@ -29,6 +29,8 @@ SKIP_PATHS = ['^[/]{1}$',
               "^/playerstatisticsFront",
               "^/upcommingMatches",
               "^/matcheResults",
+              "^/myReservations",
+              "^/refundReservation",
               ]
 
 def permissionMiddleware(get_response):

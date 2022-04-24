@@ -4,12 +4,14 @@
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                {% for article in articles%}
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter }}" class="active" aria-current="true" aria-label="Slide 1"></button>
+                {% endfor%}
             </div>
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                <img style = "height:400px" src="{% static 'system/assets/HYUFC-Carousel2.png' %}" class="d-block w-100" alt="...">
+                <div class="carousel-item active" style = 'background:black;position:relative'>
+                    <div style="height:500px;width:100%;background-image: url({% static 'system/assets/gallery-5c7d74635093e.jpg' %});background-size: 20%; background-position: center;background-repeat:repeat;filter:blur(10px)"></div>
+                    <div style="height:500px;width:100%;position:absolute;left:0;top:0;background-image: url({% static 'system/assets/gallery-5c7d74635093e.jpg' %});background-size: contain; background-position: center;background-repeat:no-repeat;"></div>
                 <div class="carousel-caption d-none d-md-block">
                     <div style='background-color:rgba(127,127,127,0.5);'>
                         <h5>First slide label</h5>
@@ -17,24 +19,23 @@
                     </div>
                 </div>
                 </div>
-                <div class="carousel-item">
-                <img style = "height:400px" src="{% static 'system/assets/gallery-5c7d74635093e.jpg' %}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <div style='background-color:rgba(127,127,127,0.5);'>
-                        <h5>First slide label</h5>
-                        <p>Some representative placeholder content for the first slide.</p>
+
+                {% for article in articles%}
+                <a href ="{% url 'article-detailfront' article.pk %}" class="carousel-item" style = 'background:aliceblue;'>
+                    {% if article.image %}
+                    <div style="height:500px;width:100%;background-image: url({{article.image.url}});background-size: contain; background-position: center;background-repeat:repeat;filter:blur(10px)"></div>
+                    <div style="height:500px;width:100%;position:absolute;left:0;top:0;background-image: url({{article.image.url}});background-size: contain; background-position: center;background-repeat:no-repeat;"></div>
+                    {% else %}
+                    <div style = "height:500px;background:black;" class="d-block w-100" alt="..."></div>
+                    {%endif%}
+                    <div class="carousel-caption d-none d-md-block">
+                        <div style='background-color:rgba(127,127,127,0.5);'>
+                            <h5>{{article.title}}</h5>
+                            <p>{{article.author}}</p>
+                        </div>
                     </div>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                <img style = "height:400px" src="{% static 'system/assets/HYUFC-Carousel2.png' %}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <div style='background-color:rgba(127,127,127,0.5);'>
-                        <h5>First slide label</h5>
-                        <p>Some representative placeholder content for the first slide.</p>
-                    </div>
-                  </div>
-                </div>
+                </a>
+                {% endfor%}
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -45,5 +46,8 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
+        <script>
+            $('.carousel').carousel()
+        </script>
         {{form|safe}}
     {% endblock %}
