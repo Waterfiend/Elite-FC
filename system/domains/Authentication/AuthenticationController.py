@@ -139,7 +139,7 @@ def profileLinks(request):
     servicesDivisionTitle = Component('container',{'type':'h4', 'content':'Services'}).create()
     servicesDivision = Component('container',{'type':'div','class':'linkContainer', 'content':servicesDivisionTitle+accountSummaryLink+myTicketsLink+myReservationsLink+changePasswordLink}).create()
 
-    menuTitle = Component('container',{'type':'summary', 'content':'Open Menu'}).create()
+    menuTitle = Component('container',{'type':'summary', 'content':'Open Menu', 'class':'open-menu'}).create()
     menuContianer = Component('container',{'type':'div', 'class':'profileLinksMenu','content':servicesDivision+staffControlsDivision}).create()
     profileLinksMenu = Component('container',{'type':'details', 'content':menuTitle+menuContianer}).create()
     return profileLinksMenu

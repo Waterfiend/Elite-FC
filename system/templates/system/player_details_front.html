@@ -27,6 +27,39 @@
             <progress style = 'width:90%' value =  {{player.tackleRatio}} max='1'></progress> {% widthratio player.tackleRatio 1 100 %}%
         </div>
     </div>
+    <details>
+    <summary>Matches Statistics</summary>
+    <table class='table'>
+        <tr>
+            <th>Teams</th>
+            <th>Date</td>
+            <th>Attempted Shots</th>
+            <th>Shots on Target</th>
+            <th>Goals</th>
+            <th>Attempted Passes</th>
+            <th>Made Passes</th>
+            <th>Attempted tackles</th>
+            <th>Made tackles</th>
+            <th>Fouls</th>
+            <th>Minutes Played</th>
+        </tr>
+        {%for statistic in player.getMatchStatistics%}
+        <tr>
+            <td>{{statistic.match.team1}} VS {{statistic.match.team2}}</td>
+            <td>{{statistic.match.date}}</td>
+            <td>{{statistic.attempted_shots}}</td>
+            <td>{{statistic.shots_on_target}}</td>
+            <td>{{statistic.goals}}</td>
+            <td>{{statistic.attempted_passes}}</td>
+            <td>{{statistic.made_passes}}</td>
+            <td>{{statistic.attempted_tackles}}</td>
+            <td>{{statistic.made_tackles}}</td>
+            <td>{{statistic.fouls}}</td>
+            <td>{{statistic.minutes_played}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+    </details>
     <br/><br>
     <hr>
     <br/><br>

@@ -149,6 +149,15 @@ top:0;
     z-index: 1;
   }
   
+  .open-menu{
+      font-size: large;
+      background-color: black;
+      color: white;
+      border-radius: 5px;
+      display: inline;
+      padding: 10px;
+      margin: 5px;
+  }
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }

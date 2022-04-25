@@ -144,28 +144,28 @@ class Player(models.Model):
         matchDetails = MatchPlayerDetails.objects.filter(player=self)
         scoredShots = matchDetails.aggregate(Sum('shots_on_target'))
         attemptedShots = matchDetails.aggregate(Sum('attempted_shots'))
-        return (scoredShots['shots_on_target__sum'] or 0)/(attemptedShots['attempted_shots__sum']+0.001)
+        return (scoredShots['shots_on_target__sum'] or 0)/((attemptedShots['attempted_shots__sum'] or 0)+0.001)
     
     # return the percentage og shots on target that resulted in a goal
     def shotConversionRate(self):
         matchDetails = MatchPlayerDetails.objects.filter(player=self)
         scoredShots = matchDetails.aggregate(Sum('goals'))
         attemptedShots = matchDetails.aggregate(Sum('shots_on_target'))
-        return (scoredShots['goals__sum'] or 0)/(attemptedShots['shots_on_target__sum']+0.001)
+        return (scoredShots['goals__sum'] or 0)/((attemptedShots['shots_on_target__sum'] or 0)+0.001)
     
     # return the percentage of passes that are successful
     def passRatio(self):
         matchDetails = MatchPlayerDetails.objects.filter(player=self)
         scoredShots = matchDetails.aggregate(Sum('made_passes'))
         attemptedShots = matchDetails.aggregate(Sum('attempted_passes'))
-        return (scoredShots['made_passes__sum'] or 0)/(attemptedShots['attempted_passes__sum']+0.001)
+        return (scoredShots['made_passes__sum'] or 0)/((attemptedShots['attempted_passes__sum'] or 0)+0.001)
     
     # return the percentage of tackles that are successful
     def tackleRatio(self):
         matchDetails = MatchPlayerDetails.objects.filter(player=self)
         scoredShots = matchDetails.aggregate(Sum('made_tackles'))
         attemptedShots = matchDetails.aggregate(Sum('attempted_tackles'))
-        return (scoredShots['made_tackles__sum'] or 0)/(attemptedShots['attempted_tackles__sum']+0.001)
+        return (scoredShots['made_tackles__sum'] or 0)/((attemptedShots['attempted_tackles__sum'] or 0)+0.001)
     
     # return the total carear goals
     def totalGoals(self):
@@ -182,6 +182,10 @@ class Player(models.Model):
         remainingMinutes = mod(minutesPlayed['minutes_played__sum'] or 0, 60)
         return f"{hoursPlayed:02}"+':'+f"{remainingMinutes:02}"
     
+    def getMatchStatistics(self):
+        matches = MatchPlayerDetails.objects.filter(player=self)
+        return matches
+        
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
     def get_absolute_url(self):
@@ -240,7 +244,7 @@ class Post(models.Model):
 TicketUser model is used to define the details of teams
 '''
 class Team(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,unique= True)
     image = models.ImageField(upload_to='team_images/', verbose_name=_("Image"), null=True, blank=True)
     def __str__(self):
         return self.name
