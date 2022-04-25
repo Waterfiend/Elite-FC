@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from system.helpers.Component import Component
-from system.helpers.FormValidationJS import FormValidationErrorsJS,FormValidateSumJS
+from system.helpers.FormValidationJS import FormValidationErrorsJS,FormValidateSumJS,DefineSubmitButtonChecksArray
 from ...models import User,Match,Player,MatchPlayerDetails
 from django.contrib import messages
 from helpers.SearchBar import Search
@@ -101,7 +101,7 @@ def playerStatisticsForm(request,id=0,match_id=0):
 
     else:
         title = 'Add Match Statistic'
-        values = {field.name:'' for field in MatchPlayerDetails._meta.fields}
+        values = {field.name:'0' for field in MatchPlayerDetails._meta.fields}
         playerMatch_id = ''
     
     #create match list in the desired format from matches
@@ -125,28 +125,32 @@ def playerStatisticsForm(request,id=0,match_id=0):
         ]}
     form = Component('form',formOptions).create(request)# create the match statistic form
     
+    
+    
     # this JavaScript is used render the validation errors that result when the user fills a field with incorrectly formatted data   
     formValidationScript = FormValidationErrorsJS(['Attempted Shots_input','Goals_input','Shots On Target_input','Attempted Passes_input','Successful Passes_input','Attempted Tackles_input','Successful Tackles_input','Fouls_input', 'Minutes Played_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()#create script componenet
     
+    defineSubmitCheckArray= DefineSubmitButtonChecksArray('4')
+    defineSubmitCheckArrayScriptComponenet=  Component('script',defineSubmitCheckArray).create()#create script componenet
     # this JavaScript varifies that the shots on target never exceed the attempted shots
-    shotsSumValidation = FormValidateSumJS('Attempted Shots_input',['Shots On Target_input'])
+    shotsSumValidation = FormValidateSumJS('Attempted Shots_input',['Shots On Target_input'],'0')
     shotsSumValidationScriptComponenet = Component('script',shotsSumValidation).create()#create script componenet
     
     # this JavaScript varifies that the goals never exceed the shots on target
-    goalsSumValidation = FormValidateSumJS('Shots On Target_input',['Goals_input'])
+    goalsSumValidation = FormValidateSumJS('Shots On Target_input',['Goals_input'],'1')
     goalsSumValidationScriptComponenet = Component('script',goalsSumValidation).create()#create script componenet
     
     # this JavaScript varifies that the passes on target never exceed the attempted passes
-    passesSumValidation = FormValidateSumJS('Attempted Passes_input',['Successful Passes_input'])
+    passesSumValidation = FormValidateSumJS('Attempted Passes_input',['Successful Passes_input'],'2')
     passesSumValidationScriptComponenet = Component('script',passesSumValidation).create()#create script componenet
     
     # this JavaScript varifies that the tackles on target never exceed the attempted tackles
-    tacklesSumValidation = FormValidateSumJS('Attempted Tackles_input',['Successful Tackles_input'])
+    tacklesSumValidation = FormValidateSumJS('Attempted Tackles_input',['Successful Tackles_input'],'3')
     tacklesSumValidationScriptComponenet = Component('script',tacklesSumValidation).create()#create script componenet
     
     # aggregate all the script componenets
-    jsScripts = formValidationScriptComponenet+shotsSumValidationScriptComponenet+goalsSumValidationScriptComponenet+passesSumValidationScriptComponenet+tacklesSumValidationScriptComponenet
+    jsScripts = formValidationScriptComponenet+defineSubmitCheckArrayScriptComponenet+shotsSumValidationScriptComponenet+goalsSumValidationScriptComponenet+passesSumValidationScriptComponenet+tacklesSumValidationScriptComponenet
     
     backLinkOptions ={
             'url':'/Matches/'+str(id),
@@ -166,7 +170,7 @@ def editStatisticsValidate(request,id,match_id):
             infoDict[key]=request.POST[key]
         infoDict.pop('csrfmiddlewaretoken')
         matchInfo = infoDict['match']
-        extracted_match_id = re.search(r'<!--(.*?)-->', matchInfo).group(1) # regular expressions to extract the match id from the match info
+        extracted_match_id = re.search(r'<!--(.*?)-->', matchInfo).group(1) # regular expressions to extract the match id from the match info0
         match = Match.objects.filter(id=extracted_match_id).first()
         user = User.objects.filter(id=id).first()
         player = Player.objects.filter(user=user).first()

@@ -93,10 +93,17 @@ def ConfirmPasswordErrorJS(passwordId,ConfirmPasswordId):
         '''
     }
 
-def FormValidateSumJS(total_id, other_ids):
+def DefineSubmitButtonChecksArray(size):
+    return {
+    'script':'''
+        let submitChecks = Array('''+size+''')
+    '''
+    }
+def FormValidateSumJS(total_id, other_ids, index):
     return {
     'script':'''
     (()=>{
+        let index = '''+index+'''
         document.addEventListener('invalid', (function(){
             return function(e) {
             //prevent the browser from showing default error bubble / hint
@@ -144,31 +151,44 @@ def FormValidateSumJS(total_id, other_ids):
                     })
                     err.innerHTML = values + ' not adding up to '+total_element.id.replace('_input','')                      
                     total_element.parentNode.insertBefore(err,total_element.nextSibling)
-                    submit.disabled = true;  
+                    submitChecks[index] = true
+                     
                 }
                 else
                 {
-                    submit.disabled = false; 
+                    submitChecks[index] = false
                     let err = document.getElementById(total_element.id+'_err')
                     if(err)
                     {
                         total_element.parentNode.removeChild(err)
                     }
                 }
+                
+                console.log(submitChecks)
+                if (submitChecks.every(element => element === false))
+                    submit.disabled = false;
+                else
+                    submit.disabled = true;
         }
         
         elements.forEach(function(element){
+            let oldElementOnChange = element.onchange
             element.onchange = function(){
                 DisplayErrors(element)
+                oldElementOnChange()
+                
             }
             
             
         })
-        
+        let oldTotalElementOnChange = total_element.onchange
         total_element.onchange = function(){
+                oldTotalElementOnChange()
                 elements.forEach(function(element){
                 DisplayErrors(element)          
                 })
+                
+                
         }
          document.getElementById('submit').onclick = function(){
             console.log('submit')
