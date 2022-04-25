@@ -125,7 +125,7 @@ def editTicket(request,id):
         ]}
     form = Component('form',formOptions).create(request)
 
-    formValidationScript = FormValidationErrorsJS(['Quantity_input','Ticket Type_input','Price_input'])
+    formValidationScript = FormValidationErrorsJS(['Quantity_input','Price_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
     
     return render(request,'system/form.html', {'title':'Edit Ticket','form':backLink+form+formValidationScriptComponenet})

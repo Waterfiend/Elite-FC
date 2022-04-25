@@ -82,7 +82,7 @@ def manageUserForm(request,id=0): #id =0 is used to define new users mode
         'form_fields':[
             {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed', 'value':values['first_name']}},
             {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed','value':values['last_name']}},
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'Email must contain @','value':values['email']}},
+            {'label':'Email','input_props':{'name':'email','type':'email','pattern':'[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}', 'placeholder':'email@email.com', 'title':'This is not an email','value':values['email']}},
             # {'label':'Password','input_props':{'name':'password','type':'password'}},
             # {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
             {'label':'Birth Date','input_props':{'name':'date_of_birth','type':'date','value':values['date_of_birth']}},

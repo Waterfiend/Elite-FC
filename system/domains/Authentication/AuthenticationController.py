@@ -23,7 +23,7 @@ def renderRegistration(request):
         'form_fields':[
             {'label':'First Name','input_props':{'name':'first_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed'}},
             {'label':'Last Name','input_props':{'name':'last_name','type':'text', 'pattern':"[A-Za-z\s]+", 'title':'Only letters allowed'}},
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email'}},
+            {'label':'Email','input_props':{'name':'email','type':'email', 'pattern':'[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}','placeholder':'email@email.com', 'title':'This is not an email'}},
             {'label':'Password','input_props':{'name':'password','type':'password'}},
             {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
             {'label':'Birth Date','input_props':{'name':'date_of_birth','type':'date'}},
@@ -75,7 +75,7 @@ def renderLogin(request):
     # Define the fields that the user will need to enter to make a proper login request
     formOptions = {'form_class':'form','method':'GET','action':'/loginValidate/',
         'form_fields':[
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email'}},
+            {'label':'Email','input_props':{'name':'email','type':'email','pattern':'[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}', 'placeholder':'email@email.com', 'title':'This is not an email'}},
             {'label':'Password','input_props':{'name':'password','type':'password'}},
         ]}
     form = Component('form',formOptions).create(request)
@@ -181,14 +181,14 @@ def changePasswordandEmailForm(request):
     # Define the form and the fields required from the user to fill to change his email and password
     formOptions = {'form_class':'form','method':'POST','action':'/validatePassword/',
         'form_fields':[
-            {'label':'Email','input_props':{'name':'email','type':'email', 'placeholder':'email@email.com', 'title':'This is not an email','value':request.session['login']['email']}},
+            {'label':'Email','input_props':{'name':'email','type':'email', 'pattern':'[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}','placeholder':'email@email.com', 'title':'This is not an email','value':request.session['login']['email']}},
             {'label':'New Password','input_props':{'name':'password','type':'password'}},
             {'label':'Confirm Password','input_props':{'name':'confirm_password','type':'password'}},
         ]}
     form = Component('form',formOptions).create(request) #create the form from formOptions
 
     # this JavaScript is used render the validation errors that result when the user fills a field with incorrectly formatted data
-    formValidationScript = FormValidationErrorsJS(['New Password_input','Confirm Password_input'])
+    formValidationScript = FormValidationErrorsJS(['Email_input','New Password_input','Confirm Password_input'])
     formValidationScriptComponenet = Component('script',formValidationScript).create()
     
     # JavaScript used to validate that user entered a confirmed password that is identical to the password
